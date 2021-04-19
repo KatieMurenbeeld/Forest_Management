@@ -1,0 +1,28 @@
+---
+title: "Forest_Sequencing"
+author: "Katie Murenbeeld"
+date: "4/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Intro:
+
+Testing out markov chain for picking a "typical" sequence of logging events in Southern Idaho timber harvest activities. 
+
+```{r load_lib, echo=FALSE, eval=TRUE}
+library(markovchain)
+```
+
+## Load data
+
+```{r pressure, echo=FALSE, eval=TRUE}
+d <- read.csv('proj_newcode2_20210419.csv')
+d$ACRES <- as.numeric(d$ACRES)
+head(d)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
