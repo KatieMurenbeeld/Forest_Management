@@ -47,3 +47,4 @@ df_ctmc <- df %>% select(GEN_ACTIVITY, SEQ_INT)
 ctmcFit(df_ctmc, byrow=TRUE, name="test_ctmc", confidencelevel = 0.95)
 ```
 
+## This is fine, but I want to basically do this for each project? For each time an ACT_int is true? I guess I don't quite understand what the functions are doing.  I found a helpful tutorial to look into more: https://www.datacamp.com/community/tutorials/markov-chain-analysis-r as well as the cran documentation: https://cran.r-project.org/web/packages/markovchain/markovchain.pdf
