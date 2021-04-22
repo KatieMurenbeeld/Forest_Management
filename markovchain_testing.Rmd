@@ -15,14 +15,35 @@ Testing out markov chain for picking a "typical" sequence of logging events in S
 
 ```{r load_lib, echo=FALSE, eval=TRUE}
 library(markovchain)
+#library(dplyr)
+library(tidyverse)
 ```
 
 ## Load data
 
-```{r pressure, echo=FALSE, eval=TRUE}
-d <- read.csv('proj_newcode2_20210419.csv')
-d$ACRES <- as.numeric(d$ACRES)
-head(d)
+```{r data, echo=FALSE, eval=TRUE}
+df <- read.csv('proj_newcode2_20210419.csv')
+#df <- df %>% rename(df, SEQ_INT = int)
+
+df$ACRES <- as.numeric(df$ACRES)
+head(df)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Try out the createSequenceMatrix fuction
+
+```{r seqmat_test, echo=TRUE, eval=TRUE}
+test_seq <- createSequenceMatrix(df$GEN_ACTIVITY, toRowProbs = TRUE, sanitize=TRUE)
+test_seq
+```
+
+```{r test_MCfit, echo=TRUE, eval=TRUE}
+mcFitMLE <- markovchainFit(data = df$GEN_ACTIVITY)
+mcFitMLE
+```
+
+```{r test_CTMC, echo=TRUE, eval=TRUE}
+df_ctmc <- df %>% select(GEN_ACTIVITY, SEQ_INT)
+
+ctmcFit(df_ctmc, byrow=TRUE, name="test_ctmc", confidencelevel = 0.95)
+```
+
