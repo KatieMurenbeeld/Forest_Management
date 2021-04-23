@@ -5,5 +5,27 @@ library(tidyverse)
 df <- read.csv('proj_newcode2_20210419.csv')
 df$ACRES <- as.numeric(df$ACRES)
 
-projects <- unique(df$NEPA_PROJECT)
+projects <- unique(unlist(df$NEPA_PROJECT))
 
+proj1 <- subset(df, NEPA_PROJECT == projects[1])
+print(proj1)
+
+y = c()
+legend = c()
+for (i in 1:length(projects)) {
+  #print(projects[i])
+  #create a temporary dataframe for each project
+  test_df <- subset(df, NEPA_PROJECT == projects[i])
+  #create a sequence matrix for each project
+  seq_test <- createSequenceMatrix(test_df$GEN_ACTIVITY, toRowProbs = TRUE, sanitize = TRUE)
+  r <- rownames(seq_test)
+  c <- colnames(seq_test)
+  test <- combine(r,c)
+  y <- append(y, seq_test)
+  legend <- append(legend, test)
+  #return(y)
+}
+
+print(projects[1])
+proj1_seq <- createSequenceMatrix(proj1$GEN_ACTIVITY, toRowProbs = TRUE, sanitize=TRUE)
+proj1_seq
