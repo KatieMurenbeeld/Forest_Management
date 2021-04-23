@@ -71,4 +71,37 @@ plot(markov2, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.
      vertex.color="green", edge.arrow.mode = 3, layout=layout)
 ```
 
-## I think I want to first, test out how to subset by project, and then try to do the subsetting in a loop. Somehow I want to get the transition matrices for each project. Still need to figure out how to get the time of the transitions. According to the datacamp markovchain in R "Transition matrices have the property that the product of subsequent matrices can describe the transtion probabilities along a time interval." I'm not sure how that works though.
+## I think I want to first, test out how to subset by project, and then try to do the subsetting in a loop. Somehow I want to get the transition matrices for each project. Still need to figure out how to get the time of the transitions. According to the datacamp markovchain in R "Transition matrices have the property that
+
+```{r subset, echo=TRUE, eval=TRUE}
+proj1 <- subset(df, NEPA_PROJECT == "(PALS)SOUTH PIONEER FIRE SALVAGE AND REFORESTATION PROJECT")
+#proj1
+
+proj1_seq <- createSequenceMatrix(proj1$SEQ_ACTIVITY, toRowProbs = TRUE, sanitize=TRUE)
+proj1_seq
+```
+```{r loop_test, echo=TRUE, eval=TRUE}
+projects <- unique(df$NEPA_PROJECT)
+
+##for (x in projects) {
+#  print(x)
+#}
+
+for (x in projects) {
+  proj <- subset(df, NEPA_PROJECT == x)
+  return(proj)
+  proj_seq <- createSequenceMatrix(proj$SEQ_ACTIVITY, toRowProbs = TRUE, sanitize=TRUE)
+  return(proj_seq)
+}
+
+proj_seq
+```
+```{r}
+
+```
+
+```{r mean_recur_time, echo=TRUE, eval=TRUE}
+meantest <- meanRecurrenceTime(markov2)
+meantest
+```
+
