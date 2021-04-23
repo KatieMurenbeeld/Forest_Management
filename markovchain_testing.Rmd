@@ -62,13 +62,13 @@ seq
 verifyMarkovProperty(seq)
 ```
 
-```{r plot_test, echo=TRUE, eval=TRUE}
+```{r plot_test, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
 markov2 <- new('markovchain', 
                transitionMatrix = seqmat1,
                states = seq)
-layout <- matrix(c(0,0,0,8,8,8,-8,8,8,-8,0,-8,-4,4,4,4,4,-4), ncol = 2, byrow = TRUE)
-plot(markov2, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.5,
-     vertex.color="green", edge.arrow.mode = 1, layout=layout)
+layout <- matrix(c(-8,-8, 0,9, -8,0, 8,1, 0,-8, -8,8, 9,8, 8,-8, 0,0, -4,4, 4,4, 4,-4), ncol = 2, byrow = TRUE)
+plot(markov2, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
+     vertex.color="green", edge.arrow.mode = 3, layout=layout)
 ```
 
 ## I think I want to first, test out how to subset by project, and then try to do the subsetting in a loop. Somehow I want to get the transition matrices for each project. Still need to figure out how to get the time of the transitions. According to the datacamp markovchain in R "Transition matrices have the property that the product of subsequent matrices can describe the transtion probabilities along a time interval." I'm not sure how that works though.
