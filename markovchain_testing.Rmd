@@ -67,6 +67,8 @@ markov2 <- new('markovchain',
                transitionMatrix = seqmat1,
                states = unique(df$GEN_ACTIVITY))
 
-plot(markov2, edge.arrow.size=0.5, vertex.size=5, vertex.label.cex = 0.5, edge.label.cex=0.5)
+plot(markov2, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.5,
+     vertex.color="green")
 ```
 
+## I think I want to first, test out how to subset by project, and then try to do the subsetting in a loop. Somehow I want to get the transition matrices for each project. Still need to figure out how to get the time of the transitions. According to the datacamp markovchain in R "Transition matrices have the property that the product of subsequent matrices can describe the transtion probabilities along a time interval." I'm not sure how that works though.
