@@ -5,6 +5,10 @@ library(tidyverse)
 df <- read.csv('proj_newcode2_20210419.csv')
 df$ACRES <- as.numeric(df$ACRES)
 
+# remove DEFAULT FOR NOT REQUIRED
+
+#df <- df %>% filter(NEPA_PROJECT != "DEFAULT FOR NOT REQUIRED")
+
 projects <- unique(unlist(df$NEPA_PROJECT))
 
 proj1 <- subset(df, NEPA_PROJECT == projects[1])
@@ -26,7 +30,8 @@ for (i in 1:length(projects)) {
                 transitionMatrix = seq_tmp)
   #create a dataframe for each markov chain
   mc <- as(mc_tmp, "data.frame")
+  mc$project <- p
   #combine all the frames together...
-  mcDf <- rbind(mcDf, p, mc)
+  mcDf <- rbind(mcDf, mc)
   # It worked!
 }
