@@ -27,6 +27,6 @@ for (i in 1:length(projects)) {
   #create a dataframe for each markov chain
   mc <- as(mc_tmp, "data.frame")
   #combine all the frames together...
-  mcDf <- rbind(mcDf,mc )
+  mcDf <- rbind(mcDf, p, mc)
   # It worked!
 }
