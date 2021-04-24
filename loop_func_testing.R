@@ -11,32 +11,22 @@ proj1 <- subset(df, NEPA_PROJECT == projects[1])
 print(proj1)
 
 
-rows = c()
-cols = c()
-y = c()
-legend = c()
+mcDf =data.frame()
 for (i in 1:length(projects)) {
   p <- projects[i]
   #create a temporary dataframe for each project
-  test_df <- subset(df, NEPA_PROJECT == projects[i])
+  tmp_df <- subset(df, NEPA_PROJECT == projects[i])
   #create a sequence matrix for each project
-  seq_test <- createSequenceMatrix(test_df$GEN_ACTIVITY, toRowProbs = TRUE, sanitize = TRUE)
-  r <- rownames(seq_test)
-  c <- colnames(seq_test)
-  test <- combine(r,c)
-  y <- append(y, seq_test)
-  rows <- append(rows, r)
-  cols <- append(cols, c)
-  legend <- append(legend, test)
-  #return(y)
+  seq_tmp <- createSequenceMatrix(tmp_df$GEN_ACTIVITY, toRowProbs = TRUE, sanitize = TRUE)
+  #create a vector of states for each project
+  states_tmp <- unique(tmp_df$GEN_ACTIVITY)
+  #create a markov chain for each project
+  mc_tmp <- new("markovchain", 
+                states = states_tmp,
+                transitionMatrix = seq_tmp)
+  #create a dataframe for each markov chain
+  mc <- as(mc_tmp, "data.frame")
+  #combine all the frames together...
+  mcDf <- rbind(mcDf,mc )
+  # It worked!
 }
-
-print(projects[1])
-proj1_seq <- createSequenceMatrix(proj1$GEN_ACTIVITY, toRowProbs = TRUE, sanitize=TRUE)
-proj1_seq
-
-length(y)
-length(rows)
-length(cols)
-
-test <- merge(y, )
