@@ -61,4 +61,9 @@ mctest <- new("markovchain", states = states_test, transitionMatrix = seq_test)
 
 seq_sim <- rmarkovchain(5, mctest, "data.frame", t0 = "INT_CUT")
 seq_sim
+## could run a for loop of this to generate an ensemble of chains? What about the time between transitions??
+
+recurrentStates(mctest)
+meanRecurrenceTime(mctest)
+
 
