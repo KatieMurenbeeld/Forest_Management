@@ -15,7 +15,8 @@ proj1 <- subset(df, NEPA_PROJECT == projects[1])
 print(proj1)
 
 
-mcDf =data.frame()
+mcDf = data.frame()
+#mean.time = data.frame() 
 for (i in 1:length(projects)) {
   #save project name to variable p
   p <- projects[i]
@@ -38,12 +39,17 @@ for (i in 1:length(projects)) {
                 states = states_tmp,
                 transitionMatrix = seq_tmp)
   
+  # find mean recurrent time for each state for each project
+  recurrTime_tmp <- meanRecurrenceTime(mc_tmp)
+  
   #create a dataframe for each markov chain
   mc <- as(mc_tmp, "data.frame")
   mc$project <- p
+  #mc$mean.recur.time <- recurrTime_tmp
   #mc$mean_time <- mean_ttime
   #combine all the frames together...
   mcDf <- rbind(mcDf, mc)
+  #mean.time <- rbind(mean.time, recurrTime_tmp)
   # It worked!
 }
 
@@ -64,6 +70,7 @@ seq_sim
 ## could run a for loop of this to generate an ensemble of chains? What about the time between transitions??
 
 recurrentStates(mctest)
-meanRecurrenceTime(mctest)
-
+time_list <- meanRecurrenceTime(mctest)
+(time_list)
+# could add the 2 lines above to for loop?
 
