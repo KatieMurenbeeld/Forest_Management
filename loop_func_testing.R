@@ -51,3 +51,14 @@ for (i in 1:length(projects)) {
 
 mcDf_NEPA <- subset(mcDf, project != "DEFAULT FOR NOT REQUIRED")
 mcDf_NEPA <- subset(mcDf_NEPA, project != "CE without DM")
+
+mcDf_NEPA %>% select(mcDf_NEPA, t0, t1, prob)
+
+# test out fitting and simulating markov chains from data
+states_test <- unique(df$GEN_ACTIVITY)
+seq_test <- createSequenceMatrix(df$GEN_ACTIVITY, toRowProbs = TRUE, sanitize = TRUE)
+mctest <- new("markovchain", states = states_test, transitionMatrix = seq_test)
+
+seq_sim <- rmarkovchain(5, mctest, "data.frame", t0 = "INT_CUT")
+seq_sim
+
