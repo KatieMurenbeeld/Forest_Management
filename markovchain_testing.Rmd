@@ -81,6 +81,7 @@ proj1 <- subset(df, NEPA_PROJECT == projects[5])
 
 proj1_seq <- createSequenceMatrix(proj1$GEN_ACTIVITY, toRowProbs = TRUE, sanitize=TRUE)
 proj1_seq
+proj1
 ```
 ```{r loop_test, echo=TRUE, eval=TRUE}
 projects <- unique(df$NEPA_PROJECT)

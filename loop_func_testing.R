@@ -14,6 +14,8 @@ projects <- unique(unlist(df$NEPA_PROJECT))
 proj1 <- subset(df, NEPA_PROJECT == projects[1])
 print(proj1)
 
+df2 <- subset(df, GEN_ACTIVITY != "LAND_CLEAR")
+df3 <- subset(df, SEQ_INT > 0 )
 
 mcDf = data.frame()
 #mean.time = data.frame() 
@@ -65,8 +67,24 @@ states_test <- unique(df$GEN_ACTIVITY)
 seq_test <- createSequenceMatrix(df$GEN_ACTIVITY, toRowProbs = TRUE, sanitize = TRUE)
 mctest <- new("markovchain", states = states_test, transitionMatrix = seq_test)
 
+# df with no LAND_CLEAR
+states_test2 <- unique(df2$GEN_ACTIVITY)
+seq_test2 <- createSequenceMatrix(df2$GEN_ACTIVITY, toRowProbs = TRUE, sanitize = TRUE)
+mctest2 <- new("markovchain", states = states_test2, transitionMatrix = seq_test2)
+
+# df with only SEQ_INT >0 days
+states_test3 <- unique(df3$GEN_ACTIVITY)
+seq_test3 <- createSequenceMatrix(df3$GEN_ACTIVITY, toRowProbs = TRUE, sanitize = TRUE)
+mctest3 <- new("markovchain", states = states_test3, transitionMatrix = seq_test3)
+
 seq_sim <- rmarkovchain(5, mctest, "data.frame", t0 = "INT_CUT")
 seq_sim
+
+seq_sim2 <- rmarkovchain(5, mctest2, "data.frame", t0 = "INT_CUT")
+seq_sim2
+
+seq_sim3 <- rmarkovchain(5, mctest3, "data.frame", t0 = "INT_CUT")
+seq_sim3
 ## could run a for loop of this to generate an ensemble of chains? What about the time between transitions??
 
 ## Let's test a for loop fo repeat the sequence simulation 20 times.
@@ -74,6 +92,14 @@ seq_sim
 
 seq_sims <- replicate(20, {
   sequence <- rmarkovchain(5, mctest, "data.frame", t0 = "EA-RH-NFH") 
+})
+
+seq_sims2 <- replicate(20, {
+  sequence <- rmarkovchain(5, mctest2, "data.frame", t0 = "INT_CUT") 
+})
+
+seq_sims3 <- replicate(20, {
+  sequence <- rmarkovchain(5, mctest3, "data.frame", t0 = "INT_CUT") 
 })
 
 ## Something strange happening with LAND_CLEAR - maybe once land is cleared doesn't leave that state for a while??
