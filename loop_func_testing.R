@@ -73,8 +73,11 @@ seq_sim
 ## Don't need a for loop, need replicate
 
 seq_sims <- replicate(20, {
-  sequence <- rmarkovchain(5, mctest, "data.frame", t0 = "INT_CUT") 
+  sequence <- rmarkovchain(5, mctest, "data.frame", t0 = "EA-RH-NFH") 
 })
+
+## Something strange happening with LAND_CLEAR - maybe once land is cleared doesn't leave that state for a while??
+
 
 recurrentStates(mctest)
 time_list <- meanRecurrenceTime(mctest)
