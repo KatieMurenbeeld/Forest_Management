@@ -31,9 +31,12 @@ df$ACRES <- as.numeric(df$ACRES)
 prob_mat <- createSequenceMatrix(df$GEN_ACTIVITY, toRowProbs = TRUE, sanitize = TRUE)
 seq_states <- unique(df$GEN_ACTIVITY)
 
+seq_states2 <- c("A2-NRH-FH", "A2-RH-FH", "A2-RH-NFH", "EA-NRH-FH", "EA-NRH-NFH", "EA-RH-FH", "EA-RH-NFH", "HARV_NOSTOCK", "INT_CUT", "LAND_CLEAR", "SPEC_PROD_REMOVE", "UA-RH-FH")
+seq_states2
+
 markov2 <- new('markovchain', 
                transitionMatrix = prob_mat,
-               states = seq_states)
+               states = seq_states2)
 layout <- matrix(c(-2,-2, 0,2.5, -2,0, 2,1.5, 0,-2, -2,2, 2.5,2, 2,-2, 0,0, -1,1, 1,1, 1,-1), ncol = 2, byrow = TRUE)
 plot(markov2, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
      vertex.color="green", edge.arrow.mode = 3, layout=layout)
