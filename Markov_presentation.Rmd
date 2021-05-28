@@ -121,11 +121,18 @@ seq_states <- unique(df$GEN_ACTIVITY)
 seq_states
 ```
 
+## Create vector of states (put in alpha order)
+
+```{r states_2, echo=TRUE, eval=TRUE}
+seq_states2 <- c("A2-NRH-FH", "A2-RH-FH", "A2-RH-NFH", "EA-NRH-FH", "EA-NRH-NFH", "EA-RH-FH", "EA-RH-NFH", "HARV_NOSTOCK", "INT_CUT", "LAND_CLEAR", "SPEC_PROD_REMOVE", "UA-RH-FH")
+seq_states2
+```
+
 ## Create a new Markov Chain
 
 ```{r new_mc, echo=TRUE, eval=TRUE}
 mc_tmp <- new("markovchain", 
-                states = seq_states,
+                states = seq_states2,
                 transitionMatrix = prob_mat)
 
 mc <- as(mc_tmp, "data.frame")
@@ -143,7 +150,7 @@ seq_sim
 
 ```{r seq_sims, echo=TRUE, eval=TRUE}
 seq_sims <- replicate(20, {
-  sequence <- rmarkovchain(5, mc_tmp, "data.frame", t0 = "EA-RH-NFH") 
+  sequence <- rmarkovchain(5, mc_tmp, "data.frame", t0 = "INT_CUT") 
 })
 seq_sims
 ```
