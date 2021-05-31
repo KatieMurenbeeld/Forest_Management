@@ -17,15 +17,22 @@ library(tidyverse)
 df <- read.csv('proj_newcode2_20210419.csv')
 #df <- df %>% rename(df, SEQ_INT = int)
 
+# Make sure Acres are numeric
 df$ACRES <- as.numeric(df$ACRES)
+
+# Add column with number of activities per project (act.count)
+df <- df %>% group_by(NEPA_PROJECT) %>% mutate(act.count=n())
 head(df)
+```
+
+```{r}
+df_test <- summarize(group_by(df, NEPA_PROJECT), DATE_COMP_MIN = min(DATE_COMP, na.rm = TRUE), DATE_COMP_MAX = max(DATE_COMP, na.rm = TRUE),
+                     ACRES_SUM = as.numeric(sum(ACRES, na.rm=TRUE)), SEQ_DAYS_MED = median(SEQ_INT, na.rm=TRUE), 
+                     SEQ_DAYS_MEAN = mean(SEQ_INT, na.rm=TRUE), ACT_COUNT=mean(act.count), PROJ_DUR=sum(SEQ_INT, narm=TRUE)) 
+
+head(df_test)  
 ```
 
 
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
 
