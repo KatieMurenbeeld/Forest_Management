@@ -9,8 +9,10 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 
 ```{r}
 library(markovchain)
-#library(dplyr)
+library(dplyr)
 library(tidyverse)
+library(ggplot2)
+library(ggpubr)
 ```
 
 ```{r}
@@ -32,6 +34,33 @@ df_test <- summarize(group_by(df, NEPA_PROJECT), DATE_COMP_MIN = min(DATE_COMP, 
 
 head(df_test)  
 ```
+
+```{r}
+ggplot(data = df_test, aes(x = ACRES_SUM)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 10)
+## Zero Inflated or real?
+```
+
+```{r}
+ggplot(data = df_test, aes(x = ACT_COUNT)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 5)
+```
+
+```{r}
+ggplot(data = df_test, aes(x = SEQ_DAYS_MEAN)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 10)
+```
+
+```{r}
+ggplot(data = df_test, aes(x = SEQ_DAYS_MED)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 10)
+```
+
+```{r}
+ggplot(data = df_test, aes(x = PROJ_DUR)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 10)
+```
+
 
 
 
