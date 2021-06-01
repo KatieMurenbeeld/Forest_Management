@@ -78,7 +78,22 @@ ggplot(data = df_test, aes(x = PROJ_DUR)) + ## specify the data we want to plot
   geom_histogram(binwidth = 10)
 ```
 
+```{r}
+ggplot(data = df_test, aes(x = INT_CUT)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 0.1)
 
+ggplot(data = df_test, aes(x = EA)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 0.1)
+
+ggplot(data = df_test, aes(x = A2)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 0.1)
+
+ggplot(data = df_test, aes(x = UA)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 0.1)
+
+ggplot(data = df_test, aes(x = LAND_CLEAR)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 0.1)
+```
 
 
 
