@@ -1,0 +1,100 @@
+---
+title: "R Notebook - Project Distributions"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+library(markovchain)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+```
+
+```{r}
+df <- read.csv('proj_newcode3_20210531.csv')
+
+df <- as_tibble(df)
+
+# getting a funny error when trying to simply rename this column
+df <- rename(df, GEN_ACT = new_code3)
+df <- rename(df, SEQ_INT = int)
+
+# Make sure Acres are numeric
+df$ACRES <- as.numeric(df$ACRES)
+
+# Add column with number of activities per project (act.count)
+df <- df %>% group_by(NEPA_PROJECT) %>% mutate(act.count=n())
+
+# Add columns with 0,1 for each General Activity (GEN_ACT). 0 = not that actitivty, 1 = is that activity
+
+df$INT_CUT <- ifelse(df$GEN_ACT != 'INT_CUT', 0, 1)
+df$A2 <- ifelse(df$GEN_ACT != 'A2', 0, 1)
+df$EA <- ifelse(df$GEN_ACT != 'EA', 0, 1)
+df$UA <- ifelse(df$GEN_ACT != 'UA', 0, 1)
+df$LAND_CLEAR <- ifelse(df$GEN_ACT != 'LAND_CLEAR', 0, 1)
+
+# Check the data
+head(df)
+```
+
+```{r}
+df_test <- summarize(group_by(df, NEPA_PROJECT), DATE_COMP_MIN = min(DATE_COMP, na.rm = TRUE), DATE_COMP_MAX = max(DATE_COMP, na.rm = TRUE),
+                     ACRES_SUM = as.numeric(sum(ACRES, na.rm=TRUE)), SEQ_DAYS_MED = median(SEQ_INT, na.rm=TRUE), 
+                     SEQ_DAYS_MEAN = mean(SEQ_INT, na.rm=TRUE), ACT_COUNT=mean(act.count), PROJ_DUR=sum(SEQ_INT, na.rm=TRUE),
+                     INT_CUT = mean(INT_CUT, na.rm=TRUE), EA = mean(EA, na.rm=TRUE), A2 = mean(A2, na.rm=TRUE), UA = mean(UA, na.rm=TRUE),
+                     LAND_CLEAR = mean(LAND_CLEAR, na.rm=TRUE)) 
+
+head(df_test)  
+```
+
+```{r}
+ggplot(data = df_test, aes(x = ACRES_SUM)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 10)
+## Zero Inflated or real?
+```
+
+```{r}
+ggplot(data = df_test, aes(x = ACT_COUNT)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 5)
+```
+
+```{r}
+ggplot(data = df_test, aes(x = SEQ_DAYS_MEAN)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 10)
+```
+
+```{r}
+ggplot(data = df_test, aes(x = SEQ_DAYS_MED)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 10)
+```
+
+```{r}
+ggplot(data = df_test, aes(x = PROJ_DUR)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 10)
+```
+
+```{r}
+ggplot(data = df_test, aes(x = INT_CUT)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 0.1)
+
+ggplot(data = df_test, aes(x = EA)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 0.1)
+
+ggplot(data = df_test, aes(x = A2)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 0.1)
+
+ggplot(data = df_test, aes(x = UA)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 0.1)
+
+ggplot(data = df_test, aes(x = LAND_CLEAR)) + ## specify the data we want to plot
+  geom_histogram(binwidth = 0.1)
+```
+
+
+
+
