@@ -81,7 +81,7 @@ seqmat5
 ## This is fine, but I want to basically do this for each project? For each time an ACT_int is true? I guess I don't quite understand what the functions are doing.  I found a helpful tutorial to look into more: https://www.datacamp.com/community/tutorials/markov-chain-analysis-r as well as the cran documentation: https://cran.r-project.org/web/packages/markovchain/markovchain.pdf
 
 ```{r seq_verify, echo=TRUE, eval=TRUE}
-seq1 <- unique(df$GEN_ACTIVITY)
+seq1 <- sort(unique(df$GEN_ACTIVITY))
 seq1
 
 verifyMarkovProperty(seq1)
@@ -207,6 +207,14 @@ after30Days3
 after30Days4
 after30Days5
 ```
+```{r steady_states, echo=TRUE, eval=TRUE}
+
+# order does matter for to find the steady state probability vector.
+steadyStates(markov1)
+
+```
+
+
 
 ```{r plot_test4, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
 seqmat5 <- createSequenceMatrix(df3$ACT_TYPE, toRowProbs = TRUE, sanitize=TRUE)
