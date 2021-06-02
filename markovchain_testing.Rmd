@@ -293,18 +293,18 @@ print("The expected number of days before a day of no action given that today ac
 ```
 
 ```{r timepassage2, echo=TRUE, eval=TRUE}
-
+#Large dataset with Regional NFs.
 # I think this is what I want!
 print("mean first passage time")
-meanFirstPassageTime(markov2.1)
-meanFirstPassageTime(markov3.1)
+meanFPT2 <- as.data.frame(meanFirstPassageTime(markov2.1))
+meanFPT3 <- as.data.frame(meanFirstPassageTime(markov3.1))
 #print("The expected number of days before a day when an activity occurs given that today no activity occurred is 131 days.")
 #print("The expected number of days before a day of no action given that today action occurred is 1.3 days.")
 ```
 
 ```{r timepassage3, echo=TRUE, eval=TRUE}
 
-# I think this is what I want!
+# I think this is what I want! For smaller dataset with only 2 projects.
 print("mean first passage time")
 meanFirstPassageTime(markov4.1)
 meanFirstPassageTime(markov5.1)
@@ -313,14 +313,22 @@ meanFirstPassageTime(markov5.1)
 ```
 
 ```{r timepassage4, echo=TRUE, eval=TRUE}
-
+# With SIdaho NF dataset
 # I think this is what I want!
 print("mean first passage time")
-meanFirstPassageTime(markov6.1)
-meanFirstPassageTime(markov7.1)
+meanFPT6 <- as.data.frame(meanFirstPassageTime(markov6.1))
+meanFPT7 <- as.data.frame(meanFirstPassageTime(markov7.1))
 #print("The expected number of days before a day when an activity occurs given that today no activity occurred is 131 days.")
 #print("The expected number of days before a day of no action given that today action occurred is 1.3 days.")
 ```
+
+```{r write_csv, echo=TRUE, eval=TRUE}
+write_csv(meanFPT2, file = "meanFPT2.csv")
+write_csv(meanFPT3, file = "meanFPT3.csv")
+write_csv(meanFPT6, file = "meanFPT6.csv")
+write_csv(meanFPT7, file = "meanFPT7.csv")
+```
+
 
 ```{r plot_test4, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
 seqmat5 <- createSequenceMatrix(df3$ACT_TYPE, toRowProbs = TRUE, sanitize=TRUE)
