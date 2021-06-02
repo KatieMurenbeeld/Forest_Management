@@ -99,7 +99,9 @@ plot(markov1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.
 
 ```{r plot_test2, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
 
-# I think I need the sequence vector in same order as a column or row of the transition matrix (alphabetical, from 0->1)??
+# I think I need the sequence vector in same order as a column or row of the transition matrix (alphabetical, from 0->1)?? 
+# I think the new('markovchain',...) already checks the trans. matrix and makes sure the seq names and row/column names of the
+# trans matrix correspond to each other.
 
 seq2 <- unique(df3$ACTIVITY_TYPE)
 seq2.1 <- sort(unique(df3$ACTIVITY_TYPE))
