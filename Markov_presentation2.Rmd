@@ -239,7 +239,9 @@ plot(markov2.1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edg
 #plot(markov6.1)
 #plot(markov7.1)
 ```
+
 ## New Chains
+
 ```{r plot_MC2, echo=FALSE, eval=TRUE, fig.height=6, fig.width=8, fig.align='center'}
 
 #plot(markov2.1)
@@ -248,7 +250,9 @@ plot(markov3.1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edg
 #plot(markov6.1)
 #plot(markov7.1)
 ```
+
 ## New Chains
+
 ```{r plot_MC3, echo=FALSE, eval=TRUE, fig.height=6, fig.width=8, fig.align='center'}
 
 #plot(markov2.1)
@@ -259,6 +263,7 @@ plot(markov6.1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edg
 ```
 
 ## New Chains
+
 ```{r plot_MC4, echo=FALSE, eval=TRUE, fig.height=6, fig.width=8, fig.align='center'}
 
 #plot(markov2.1)
@@ -267,10 +272,12 @@ plot(markov6.1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edg
 plot(markov7.1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
      vertex.color="green", edge.arrow.mode = 3)
 ```
+
 ## Mean First Passage of Time
+
 Super easy to do.
 
-```{r timepassage4, echo=TRUE, eval=FALSE, class.output="scroll-100"}
+```{r timepassage, echo=TRUE, eval=FALSE, class.output="scroll-100"}
 #Dataset with SIdaho NFs.
 meanFirstPassageTime(markov7.1)
 
@@ -292,9 +299,3 @@ knitr::include_graphics("meanFPTs_Reg.png")
 knitr::include_graphics("meanFPTs_SIdaho.png")
 ```
 
-## Mean First Passage of Time
-```{r timepassage4, echo=FALSE, eval=TRUE, class.output="scroll-100"}
-#Dataset with SIdaho NFs.
-meanFirstPassageTime(markov7.1)
-
-```
