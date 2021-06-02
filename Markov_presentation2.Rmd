@@ -1,0 +1,293 @@
+---
+title: "Markov Chains"
+author: "Katie Murenbeeld"
+date: "6/02/2021"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(markovchain)
+library(dplyr)
+library(tidyverse)
+```
+```{css, echo=FALSE}
+pre {
+  max-height: 500px;
+  max-width: 1000px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 500px;
+}
+```
+
+## Markov Chains!
+From the "markovchain r doc" and "An Intro to markovchain Package"
+```{r plot_test, echo=FALSE, eval=TRUE, fig.height=6, fig.width=8, fig.align='center'}
+df <- read.csv('proj_newcode2_20210419.csv')
+df$ACRES <- as.numeric(df$ACRES)
+prob_mat <- createSequenceMatrix(df$GEN_ACTIVITY, toRowProbs = TRUE, sanitize = TRUE)
+seq_states <- unique(df$GEN_ACTIVITY)
+
+seq_states2 <- c("A2-NRH-FH", "A2-RH-FH", "A2-RH-NFH", "EA-NRH-FH", "EA-NRH-NFH", "EA-RH-FH", "EA-RH-NFH", "HARV_NOSTOCK", "INT_CUT", "LAND_CLEAR", "SPEC_PROD_REMOVE", "UA-RH-FH")
+seq_states2
+
+markov2 <- new('markovchain', 
+               transitionMatrix = prob_mat,
+               states = seq_states2)
+layout <- matrix(c(-2,-2, 0,2.5, -2,0, 2,1.5, 0,-2, -2,2, 2.5,2, 2,-2, 0,0, -1,1, 1,1, 1,-1), ncol = 2, byrow = TRUE)
+plot(markov2, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
+     vertex.color="green", edge.arrow.mode = 3, layout=layout)
+```
+
+## Motivation 
+
+- Need to set up a "typical" logging sequence in southern Idaho 
+
+```{r logseq_img, echo=FALSE, eval=TRUE, fig.align='center', fig.cap="Logging Scenarios"}
+knitr::include_graphics("Log_seq2.png")
+```
+
+
+## What is a Markov Chain?
+
+Discrete Time Markov Chain = sequence of random variables $$X_1, X_2,...,X_n...$$ Characterized by the Markov process
+
+which is "memoryless", the distribution of the future state $X_{n+1}$ depends only on current state $X_n$ 
+
+## What is a Markov Chain?
+
+The chain moves from one step to another (i.e. the 'transition' or 'step')
+
+State space is the set of possible states $S = {s_1,s_2,...s_r}$. These states can be infinite or countable
+
+Probability of $p_{ij}$ to move from state $s_i$ to state $s_j$ in one step is the transition porbability
+
+$p_{ij} = Pr(X_1 = s_j|X_0 = s_i)$
+
+## What is a Markov Chain?
+
+Distribution of transitions from one state to another represented in transition matrix
+
+Each element of poistion $(i,j)$ represents the transtion prob $p_{ij}$
+
+$$ P = \begin{bmatrix}p_{11} & p_{12} & p_{13}\\
+p_{21} & p_{22} & p_{23}\\
+p_{31} & p_{32} & p_{33}
+\end{bmatrix}$$
+
+## The Package
+
+There is a package in r (for everything) for Markov Chains called...markov chain.
+
+- library(markovchain)
+- library(dplyr)
+- library(tidyverse)
+
+## The Data
+
+Load in the data. In this case the data has the following variables:
+
+- NEPA project name
+- GEN_ACTIVITY - general activity, basic definition of activity based on Forest Service objective
+- Date Completed
+- Acres
+- SEQ_DAYS/SEQ_INT - sequence days, the number of days between activities (date/integer)
+- SEQ_ACTIVITY - sequence activity, a new category, "activity to activity"
+
+```{r data, echo=FALSE, eval=TRUE}
+df <- read.csv('proj_newcode2_20210419.csv')
+df$ACRES <- as.numeric(df$ACRES)
+```
+
+
+## Basic Process (I think??)
+1. From data create a transition matrix
+2. Fram data create a vector of states
+3. Create a new Markov Chain
+4. Sample Markov Chain
+
+## Create transition matrix
+
+```{r trans_mat, echo=TRUE, eval=TRUE}
+prob_mat <- createSequenceMatrix(df$GEN_ACTIVITY, 
+            toRowProbs = TRUE, sanitize = TRUE)
+prob_mat
+```
+
+## Create vector of states
+
+```{r states, echo=TRUE, eval=TRUE}
+seq_states <- unique(df$GEN_ACTIVITY)
+seq_states
+```
+
+## Create vector of states (put in alpha order)
+
+```{r states_2, echo=TRUE, eval=TRUE}
+seq_states2 <- c("A2-NRH-FH", "A2-RH-FH", "A2-RH-NFH", "EA-NRH-FH", "EA-NRH-NFH", "EA-RH-FH", "EA-RH-NFH", "HARV_NOSTOCK", "INT_CUT", "LAND_CLEAR", "SPEC_PROD_REMOVE", "UA-RH-FH")
+seq_states2
+```
+
+## Create a new Markov Chain
+
+```{r new_mc, echo=TRUE, eval=TRUE}
+mc_tmp <- new("markovchain", 
+                states = seq_states2,
+                transitionMatrix = prob_mat)
+
+mc <- as(mc_tmp, "data.frame")
+print(head(mc))
+```
+
+## Can sample from Markov Chain 
+
+```{r seq_sim, echo=TRUE, eval=TRUE}
+seq_sim <- rmarkovchain(5, mc_tmp, "data.frame", t0 = "INT_CUT")
+seq_sim
+```
+
+## Can repeat many times? Any common patterns?
+
+```{r seq_sims, echo=TRUE, eval=TRUE}
+seq_sims <- replicate(20, {
+  sequence <- rmarkovchain(5, mc_tmp, "data.frame", t0 = "INT_CUT") 
+})
+seq_sims
+```
+
+## Moving Forward
+
+- Still don't fully understand "under the hood"
+- Still don't understand time and timing 
+  - really to to know the transition times from one state (activity) to another
+  
+## I Moved Forward
+
+- Created a couple new datasets 
+  - 1 with National Forests for S. Idaho
+  - 1 with National Forests for larger regions (includes NFs in WY, OR, MT)
+- Most importantly: 
+  - these datasets now have a row for every day of a project
+  - these datasets contain a column for action (1) - no action (0) 
+- Got a lot of practice with functions in Python to streamline process
+
+## New Chains
+
+```{r new-chains, echo=FALSE, eval=TRUE}
+# Load datasets
+df3 <- read.csv('proj_newcode3_20210602.csv')
+df3$ACTION <- as.character(df3$ACTION)
+
+df5 <- read.csv('proj_newcode3_20210602_v02.csv')
+df5$ACTION <- as.character(df5$ACTION)
+
+# create transition matrices
+seqmat2 <- createSequenceMatrix(df3$ACTIVITY_TYPE, toRowProbs = TRUE, sanitize=TRUE)
+seqmat3 <- createSequenceMatrix(df3$ACTION, toRowProbs = TRUE, sanitize=TRUE)
+
+seqmat6 <- createSequenceMatrix(df5$ACTIVITY_TYPE, toRowProbs = TRUE, sanitize=TRUE)
+seqmat7 <- createSequenceMatrix(df5$ACTION, toRowProbs = TRUE, sanitize=TRUE)
+
+# create state vectors
+seq2 <- unique(df3$ACTIVITY_TYPE)
+seq2.1 <- sort(unique(df3$ACTIVITY_TYPE))
+seq3 <- unique(df3$ACTION)
+seq3.1 <- sort(unique(df3$ACTION))
+
+seq6 <- unique(df5$ACTIVITY_TYPE)
+seq6.1 <- sort(unique(df5$ACTIVITY_TYPE))
+seq7 <- unique(df5$ACTION)
+seq7.1 <- sort(unique(df5$ACTION))
+  
+# Create MC objects
+
+markov2 <- new('markovchain', 
+               transitionMatrix = seqmat2,
+               states = seq2)
+markov3 <- new('markovchain', 
+               transitionMatrix = seqmat3,
+               states = seq3)
+markov2.1 <- new('markovchain', 
+               transitionMatrix = seqmat2,
+               states = seq2.1)
+markov3.1 <- new('markovchain', 
+               transitionMatrix = seqmat3,
+               states = seq3.1)
+markov6 <- new('markovchain', 
+               transitionMatrix = seqmat6,
+               states = seq6)
+markov7 <- new('markovchain', 
+               transitionMatrix = seqmat7,
+               states = seq7)
+markov6.1 <- new('markovchain', 
+               transitionMatrix = seqmat6,
+               states = seq6.1)
+markov7.1 <- new('markovchain', 
+               transitionMatrix = seqmat7,
+               states = seq7.1)
+```
+
+```{r plot_MC1, echo=FALSE, eval=TRUE, fig.height=6, fig.width=8, fig.align='center'}
+#layout <- matrix(c(-2,-2, 0,2.5, -2,0, 2,1.5, 0,-2, -2,2, 2.5,2, 2,-2, 0,0, -1,1, 1,1, 1,-1), ncol = 2, byrow = TRUE)
+plot(markov2.1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
+     vertex.color="green", edge.arrow.mode = 3)
+#plot(markov2.1)
+#plot(markov3.1)
+#plot(markov6.1)
+#plot(markov7.1)
+```
+## New Chains
+```{r plot_MC2, echo=FALSE, eval=TRUE, fig.height=6, fig.width=8, fig.align='center'}
+
+#plot(markov2.1)
+plot(markov3.1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
+     vertex.color="green", edge.arrow.mode = 3)
+#plot(markov6.1)
+#plot(markov7.1)
+```
+## New Chains
+```{r plot_MC3, echo=FALSE, eval=TRUE, fig.height=6, fig.width=8, fig.align='center'}
+
+#plot(markov2.1)
+#plot(markov3.1)
+plot(markov6.1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
+     vertex.color="green", edge.arrow.mode = 3)
+#plot(markov7.1)
+```
+
+## New Chains
+```{r plot_MC4, echo=FALSE, eval=TRUE, fig.height=6, fig.width=8, fig.align='center'}
+
+#plot(markov2.1)
+#plot(markov3.1)
+#plot(markov6.1)
+plot(markov7.1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
+     vertex.color="green", edge.arrow.mode = 3)
+```
+## Mean First Passage of Time
+
+
+```{r timepassage1, echo=FALSE, eval=TRUE}
+#Large dataset with Regional NFs.
+# I think this is what I want!
+print("mean first passage time")
+meanFirstPassageTime(markov2.1)
+meanFirstPassageTime(markov3.1)
+#print("The expected number of days before a day when an activity occurs given that today no activity occurred is 131 days.")
+#print("The expected number of days before a day of no action given that today action occurred is 1.3 days.")
+```
+
+## Mean First Passage of Time
+
+```{r timepassage2, echo=FALSE, eval=TRUE}
+#Large dataset with Regional NFs.
+# I think this is what I want!
+print("mean first passage time")
+meanFirstPassageTime(markov6.1)
+meanFirstPassageTime(markov7.1)
+#print("The expected number of days before a day when an activity occurs given that today no activity occurred is 131 days.")
+#print("The expected number of days before a day of no action given that today action occurred is 1.3 days.")
+```
