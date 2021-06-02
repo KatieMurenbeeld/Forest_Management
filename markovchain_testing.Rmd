@@ -211,7 +211,10 @@ after30Days5
 
 # order does matter for to find the steady state probability vector.
 steadyStates(markov1)
-
+steadyStates(markov2.1)
+steadyStates(markov3.1)
+steadyStates(markov4.1)
+steadyStates(markov5.1)
 ```
 
 
