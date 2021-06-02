@@ -22,111 +22,156 @@ library(tidyverse)
 ## Load data
 
 ```{r data, echo=FALSE, eval=TRUE}
+df <- read.csv('proj_newcode2_20210419.csv')
+#df <- df %>% rename(df, SEQ_INT = int)
+df$ACRES <- as.numeric(df$ACRES)
+
 df1 <- read.csv('test_proj1_20210601.csv')
 df1$ACT <- as.character(df1$ACT)
 
 df2 <- read.csv('test_proj2_20210601.csv')
 df2$ACT <- as.character(df2$ACT)
 
-df <- read.csv('proj_newcode2_20210419.csv')
-#df <- df %>% rename(df, SEQ_INT = int)
-
-df$ACRES <- as.numeric(df$ACRES)
+df3 <- read.csv('proj_newcode3_20210602.csv')
+df3$ACTION <- as.character(df3$ACTION)
 
 head(df)
 head(df1)
 head(df2)
-
-df3 <- rbind(df1, df2)
 head(df3)
+
+df4 <- rbind(df1, df2)
+head(df4)
 ```
 
 ## Try out the createSequenceMatrix fuction
 
-```{r seqmat_test1, echo=TRUE, eval=TRUE}
-seqmat1 <- createSequenceMatrix(df1$ACT_TYPE, toRowProbs = TRUE, sanitize=TRUE)
+```{r seqmat, echo=TRUE, eval=TRUE}
+# First dataset. I think too many action states. No binary Action - No Action?
+seqmat1 <- createSequenceMatrix(df$GEN_ACTIVITY, toRowProbs = TRUE, sanitize=TRUE)
 seqmat1
-```
 
-```{r seqmat_test2, echo=TRUE, eval=TRUE}
-seqmat2 <- createSequenceMatrix(df1$ACT, toRowProbs = TRUE, sanitize=TRUE)
+# New dataset with more Nat. Forests added. Very simplified activity types and has binary Action - No Action?
+seqmat2 <- createSequenceMatrix(df3$ACTIVITY_TYPE, toRowProbs = TRUE, sanitize=TRUE)
 seqmat2
+
+seqmat3 <- createSequenceMatrix(df3$ACTION, toRowProbs = TRUE, sanitize=TRUE)
+seqmat3
+
+# Test datasets with only 2 projects from Nat. Forests in Idaho. Very simplified activity types and has binary Action - No Action?
+seqmat4 <- createSequenceMatrix(df4$ACT_TYPE, toRowProbs = TRUE, sanitize=TRUE)
+seqmat4
+
+seqmat5 <- createSequenceMatrix(df4$ACT, toRowProbs = TRUE, sanitize=TRUE)
+seqmat5
 ```
 
 
 ```{r test_MCfit, echo=TRUE, eval=TRUE}
-mcFitMLE <- markovchainFit(data = df$GEN_ACTIVITY)
-summary(mcFitMLE)
+#mcFitMLE <- markovchainFit(data = df$GEN_ACTIVITY)
+#summary(mcFitMLE)
 ```
 
 ```{r test_CTMC, echo=TRUE, eval=TRUE}
-df_ctmc <- df %>% select(GEN_ACTIVITY, SEQ_INT)
+#df_ctmc <- df %>% select(GEN_ACTIVITY, SEQ_INT)
 
-ctmcFit(df_ctmc, byrow=TRUE, name="test_ctmc", confidencelevel = 0.95)
+#ctmcFit(df_ctmc, byrow=TRUE, name="test_ctmc", confidencelevel = 0.95)
 ```
 
 ## This is fine, but I want to basically do this for each project? For each time an ACT_int is true? I guess I don't quite understand what the functions are doing.  I found a helpful tutorial to look into more: https://www.datacamp.com/community/tutorials/markov-chain-analysis-r as well as the cran documentation: https://cran.r-project.org/web/packages/markovchain/markovchain.pdf
 
 ```{r seq_verify, echo=TRUE, eval=TRUE}
-seq <- unique(df$GEN_ACTIVITY)
-seq
+seq1 <- unique(df$GEN_ACTIVITY)
+seq1
 
-verifyMarkovProperty(seq)
+verifyMarkovProperty(seq1)
 ```
 
 ```{r plot_test, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
-markov2 <- new('markovchain', 
+markov1 <- new('markovchain', 
                transitionMatrix = seqmat1,
-               states = seq)
+               states = seq1)
 layout <- matrix(c(-8,-8, 0,9, -8,0, 8,1, 0,-8, -8,8, 9,8, 8,-8, 0,0, -4,4, 4,4, 4,-4), ncol = 2, byrow = TRUE)
-plot(markov2, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
+plot(markov1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
      vertex.color="green", edge.arrow.mode = 3, layout=layout)
 ```
 
 
 ```{r plot_test2, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
-seq1 <- unique(df1$ACT_TYPE)
 
-seq2 <- unique(df1$ACT)
-  
+# I think I need the sequence vector in same order as a column or row of the transition matrix (alphabetical, from 0->1)??
 
-markov3 <- new('markovchain', 
-               transitionMatrix = seqmat1,
-               states = seq1)
+seq2 <- unique(df3$ACTIVITY_TYPE)
+seq2.1 <- sort(unique(df3$ACTIVITY_TYPE))
 
-markov4 <- new('markovchain', 
+seq3 <- unique(df3$ACTION)
+seq3.1 <- sort(unique(df3$ACTION))
+
+markov2 <- new('markovchain', 
                transitionMatrix = seqmat2,
                states = seq2)
-#layout <- matrix(c(-8,-8, 0,9, -8,0, 8,1, 0,-8, -8,8, 9,8, 8,-8, 0,0, -4,4, 4,4, 4,-4), ncol = 2, byrow = TRUE)
-#plot(markov2, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
-#     vertex.color="green", edge.arrow.mode = 3, layout=layout)
 
-plot(markov3)
-plot(markov4)
-```
-```{r plot_test3, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
-seqmat3 <- createSequenceMatrix(df2$ACT_TYPE, toRowProbs = TRUE, sanitize=TRUE)
-
-seqmat4 <- createSequenceMatrix(df2$ACT, toRowProbs = TRUE, sanitize=TRUE)
-
-seq3 <- unique(df2$ACT_TYPE)
-
-seq4 <- unique(df2$ACT)
-  
-
-markov5 <- new('markovchain', 
+markov3 <- new('markovchain', 
                transitionMatrix = seqmat3,
                states = seq3)
 
-markov6 <- new('markovchain', 
+markov2.1 <- new('markovchain', 
+               transitionMatrix = seqmat2,
+               states = seq2.1)
+
+markov3.1 <- new('markovchain', 
+               transitionMatrix = seqmat3,
+               states = seq3.1)
+
+plot(markov2)
+plot(markov3)
+plot(markov2.1)
+plot(markov3.1)
+```
+```{r check_order, echo=TRUE, eval=TRUE}
+# Check that the seq and transition matrix tables are in the same order.
+print(seqmat2)
+print(seq2)
+print(seqmat3)
+print(seq3)
+
+print(seq2.1)
+print(seq3.1)
+```
+
+
+```{r plot_test3, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
+
+
+#seqmat4 <- createSequenceMatrix(df2$ACT_TYPE, toRowProbs = TRUE, sanitize=TRUE)
+#seqmat4 <- createSequenceMatrix(df2$ACT, toRowProbs = TRUE, sanitize=TRUE)
+
+seq4 <- unique(df4$ACT_TYPE)
+seq4.1 <- sort(unique(df4$ACT_TYPE))
+seq5 <- unique(df4$ACT)
+seq5.1 <- sort(unique(df4$ACT))
+  
+
+markov4 <- new('markovchain', 
                transitionMatrix = seqmat4,
                states = seq4)
-#layout <- matrix(c(-8,-8, 0,9, -8,0, 8,1, 0,-8, -8,8, 9,8, 8,-8, 0,0, -4,4, 4,4, 4,-4), ncol = 2, byrow = TRUE)
-#plot(markov2, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
-#     vertex.color="green", edge.arrow.mode = 3, layout=layout)
 
+markov5 <- new('markovchain', 
+               transitionMatrix = seqmat5,
+               states = seq5)
+
+markov4.1 <- new('markovchain', 
+               transitionMatrix = seqmat4,
+               states = seq4.1)
+
+markov5.1 <- new('markovchain', 
+               transitionMatrix = seqmat5,
+               states = seq5.1)
+
+plot(markov4)
 plot(markov5)
-plot(markov6)
+plot(markov4.1)
+plot(markov5.1)
 ```
 
 ```{r plot_test4, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
