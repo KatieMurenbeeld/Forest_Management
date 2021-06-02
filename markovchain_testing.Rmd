@@ -176,6 +176,38 @@ plot(markov4.1)
 plot(markov5.1)
 ```
 
+```{r preds7Days, echo=TRUE, eval=TRUE}
+initialstate <- c(0,1)
+initialstate2 <- c(0,1,0, 0,0,0, 0,0,0, 0,0,0)
+initialstate3 <- c(0,0,0,1)
+
+after7Days2 <- initialstate2 * (markov2^7) #large dataset, s = 12
+after7Days3 <- initialstate * (markov3^7) #large dataset, s = 2
+after7Days4 <- initialstate3 * (markov4^7) #2-project dataset, s = 4
+after7Days5 <- initialstate * (markov5^7) #2-project dataset, s = 2
+
+after7Days2
+after7Days3
+after7Days4
+after7Days5
+```
+
+```{r preds30Days, echo=TRUE, eval=TRUE}
+initialstate <- c(0,1)
+initialstate2 <- c(0,1,0, 0,0,0, 0,0,0, 0,0,0)
+initialstate3 <- c(0,0,0,1)
+
+after30Days2 <- initialstate2 * (markov2^30) #large dataset, s = 12
+after30Days3 <- initialstate * (markov3^30) #large dataset, s = 2
+after30Days4 <- initialstate3 * (markov4^30) #2-project dataset, s = 4
+after30Days5 <- initialstate * (markov5^30) #2-project dataset, s = 2
+
+after30Days2
+after30Days3
+after30Days4
+after30Days5
+```
+
 ```{r plot_test4, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
 seqmat5 <- createSequenceMatrix(df3$ACT_TYPE, toRowProbs = TRUE, sanitize=TRUE)
 
