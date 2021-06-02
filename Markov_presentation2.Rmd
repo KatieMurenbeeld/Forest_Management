@@ -268,26 +268,33 @@ plot(markov7.1, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edg
      vertex.color="green", edge.arrow.mode = 3)
 ```
 ## Mean First Passage of Time
+Super easy to do.
 
+```{r timepassage4, echo=TRUE, eval=FALSE, class.output="scroll-100"}
+#Dataset with SIdaho NFs.
+meanFirstPassageTime(markov7.1)
 
-```{r timepassage1, echo=FALSE, eval=TRUE}
-#Large dataset with Regional NFs.
-# I think this is what I want!
-print("mean first passage time")
-meanFirstPassageTime(markov2.1)
-meanFirstPassageTime(markov3.1)
-#print("The expected number of days before a day when an activity occurs given that today no activity occurred is 131 days.")
-#print("The expected number of days before a day of no action given that today action occurred is 1.3 days.")
 ```
 
 ## Mean First Passage of Time
 
-```{r timepassage2, echo=FALSE, eval=TRUE}
+
+```{r timepassage1, echo=FALSE, eval=TRUE, class.output="scroll-100"}
 #Large dataset with Regional NFs.
-# I think this is what I want!
-print("mean first passage time")
-meanFirstPassageTime(markov6.1)
+#meanFirstPassageTime(markov2.1)
+knitr::include_graphics("meanFPTs_Reg.png")
+```
+
+## Mean First Passage of Time
+
+```{r timepassage2, echo=FALSE, eval=TRUE, class.output="scroll-100"}
+#Smaller dataset with SIdaho NFs.
+knitr::include_graphics("meanFPTs_SIdaho.png")
+```
+
+## Mean First Passage of Time
+```{r timepassage4, echo=FALSE, eval=TRUE, class.output="scroll-100"}
+#Dataset with SIdaho NFs.
 meanFirstPassageTime(markov7.1)
-#print("The expected number of days before a day when an activity occurs given that today no activity occurred is 131 days.")
-#print("The expected number of days before a day of no action given that today action occurred is 1.3 days.")
+
 ```
