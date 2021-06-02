@@ -35,11 +35,14 @@ df2$ACT <- as.character(df2$ACT)
 df3 <- read.csv('proj_newcode3_20210602.csv')
 df3$ACTION <- as.character(df3$ACTION)
 
+df5 <- read.csv('proj_newcode3_20210602_v02.csv')
+df5$ACTION <- as.character(df5$ACTION)
+
 head(df)
 head(df1)
 head(df2)
 head(df3)
-
+head(df5)
 df4 <- rbind(df1, df2)
 head(df4)
 ```
@@ -64,6 +67,14 @@ seqmat4
 
 seqmat5 <- createSequenceMatrix(df4$ACT, toRowProbs = TRUE, sanitize=TRUE)
 seqmat5
+
+
+# New dataset with on SIdaho Nat.Forests. Very simplified activity types and has binary Action - No Action?
+seqmat6 <- createSequenceMatrix(df5$ACTIVITY_TYPE, toRowProbs = TRUE, sanitize=TRUE)
+seqmat6
+
+seqmat7 <- createSequenceMatrix(df5$ACTION, toRowProbs = TRUE, sanitize=TRUE)
+seqmat7
 ```
 
 
@@ -175,6 +186,36 @@ plot(markov5)
 plot(markov4.1)
 plot(markov5.1)
 ```
+```{r plot_test4, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
+# For newer dataset with simplified activties, binary (action, no action). Only fo SIdaho National Forests.
+seq6 <- unique(df5$ACTIVITY_TYPE)
+seq6.1 <- sort(unique(df5$ACTIVITY_TYPE))
+seq7 <- unique(df5$ACTION)
+seq7.1 <- sort(unique(df5$ACTION))
+  
+
+markov6 <- new('markovchain', 
+               transitionMatrix = seqmat6,
+               states = seq6)
+
+markov7 <- new('markovchain', 
+               transitionMatrix = seqmat7,
+               states = seq7)
+
+markov6.1 <- new('markovchain', 
+               transitionMatrix = seqmat6,
+               states = seq6.1)
+
+markov7.1 <- new('markovchain', 
+               transitionMatrix = seqmat7,
+               states = seq7.1)
+
+plot(markov6)
+plot(markov7)
+plot(markov6.1)
+plot(markov7.1)
+```
+
 
 ```{r preds7Days, echo=TRUE, eval=TRUE}
 initialstate <- c(0,1)
@@ -271,6 +312,15 @@ meanFirstPassageTime(markov5.1)
 #print("The expected number of days before a day of no action given that today action occurred is 1.3 days.")
 ```
 
+```{r timepassage4, echo=TRUE, eval=TRUE}
+
+# I think this is what I want!
+print("mean first passage time")
+meanFirstPassageTime(markov6.1)
+meanFirstPassageTime(markov7.1)
+#print("The expected number of days before a day when an activity occurs given that today no activity occurred is 131 days.")
+#print("The expected number of days before a day of no action given that today action occurred is 1.3 days.")
+```
 
 ```{r plot_test4, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
 seqmat5 <- createSequenceMatrix(df3$ACT_TYPE, toRowProbs = TRUE, sanitize=TRUE)
