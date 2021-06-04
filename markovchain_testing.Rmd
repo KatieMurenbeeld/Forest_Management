@@ -346,8 +346,42 @@ reg_logseq1 <- rmarkovchain(n = 365, object = markov2.1, t0 = "NO_ACT")
 # For 2 states
 reg_logseq2 <- rmarkovchain(n = 365, object = markov3.1, t0 = "0")
 
+
 ```
 
+```{r save_seq, echo=TRUE, eval=TRUE}
+sidaho_logseq1 <- as.data.frame(sidaho_logseq1)
+sidaho_logseq2 <- as.data.frame(sidaho_logseq2)
+reg_logseq1 <- as.data.frame(reg_logseq1)
+reg_logseq2 <- as.data.frame(reg_logseq2)
+
+random_seg <- bind_cols(sidaho_logseq1, sidaho_logseq2, reg_logseq1, reg_logseq2)
+```
+
+## Let's replicate a bunch of times!
+
+```{r, seq_sims, echo=TRUE, eval=TRUE}
+
+sidaho_12states_sims <- replicate(20, {
+  sequence <- rmarkovchain(n = 365, object = markov6.1 , t0 = "NO_ACT")
+})
+  
+sidaho_2states_sims <- replicate(20, {
+  sequence <- rmarkovchain(n = 365, object = markov7.1, t0 = "0")
+})
+
+reg_12states_sims <- replicate(20, {
+  sequence <- rmarkovchain(n = 365, object = markov2.1, t0 = "NO_ACT")
+})
+
+reg_2states_sims <- replicate(20, {
+  sequence <- rmarkovchain(n = 365, object = markov3.1, t0 = "0")
+})
+```
+
+```{r save_seq2, echo=TRUE, eval=TRUE}
+
+```
 
 
 ## I think I want to first, test out how to subset by project, and then try to do the subsetting in a loop. Somehow I want to get the transition matrices for each project. Still need to figure out how to get the time of the transitions. According to the datacamp markovchain in R "Transition matrices have the property that
