@@ -323,37 +323,32 @@ meanFPT7 <- as.data.frame(meanFirstPassageTime(markov7.1))
 ```
 
 ```{r write_csv, echo=TRUE, eval=TRUE}
-write_csv(meanFPT2, file = "meanFPT2.csv")
-write_csv(meanFPT3, file = "meanFPT3.csv")
-write_csv(meanFPT6, file = "meanFPT6.csv")
-write_csv(meanFPT7, file = "meanFPT7.csv")
+#write_csv(meanFPT2, file = "meanFPT2.csv")
+#write_csv(meanFPT3, file = "meanFPT3.csv")
+#write_csv(meanFPT6, file = "meanFPT6.csv")
+#write_csv(meanFPT7, file = "meanFPT7.csv")
 ```
 
 
-```{r plot_test4, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
-seqmat5 <- createSequenceMatrix(df3$ACT_TYPE, toRowProbs = TRUE, sanitize=TRUE)
+## Let's generate a random sequence according to the underlying stochastic process for the MCs I made above. 
+It's simple. Just use rmarkovchain!
 
-seqmat6 <- createSequenceMatrix(df3$ACT, toRowProbs = TRUE, sanitize=TRUE)
+```{r rmark echo=TRUE, eval=TRUE}
 
-seq5 <- unique(df3$ACT_TYPE)
+# For 12 states
+#markov6.1
+sidaho_logseq1 <- rmarkovchain(n = 365, object = markov6.1 , t0 = "NO_ACT")
+# For 2 states
+sidaho_logseq2 <- rmarkovchain(n = 365, object = markov7.1, t0 = "0")
 
-seq6 <- unique(df3$ACT)
-  
+# For 12 states
+reg_logseq1 <- rmarkovchain(n = 365, object = markov2.1, t0 = "NO_ACT")
+# For 2 states
+reg_logseq2 <- rmarkovchain(n = 365, object = markov3.1, t0 = "0")
 
-markov7 <- new('markovchain', 
-               transitionMatrix = seqmat5,
-               states = seq5)
-
-markov8 <- new('markovchain', 
-               transitionMatrix = seqmat6,
-               states = seq6)
-#layout <- matrix(c(-8,-8, 0,9, -8,0, 8,1, 0,-8, -8,8, 9,8, 8,-8, 0,0, -4,4, 4,4, 4,-4), ncol = 2, byrow = TRUE)
-#plot(markov2, edge.arrow.size=0.5, vertex.size=10, vertex.label.cex = 0.5, edge.label.cex=0.75,
-#     vertex.color="green", edge.arrow.mode = 3, layout=layout)
-
-plot(markov7)
-plot(markov8)
 ```
+
+
 
 ## I think I want to first, test out how to subset by project, and then try to do the subsetting in a loop. Somehow I want to get the transition matrices for each project. Still need to figure out how to get the time of the transitions. According to the datacamp markovchain in R "Transition matrices have the property that
 
