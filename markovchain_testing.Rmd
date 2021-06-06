@@ -26,11 +26,11 @@ df <- read.csv('proj_newcode2_20210419.csv')
 #df <- df %>% rename(df, SEQ_INT = int)
 df$ACRES <- as.numeric(df$ACRES)
 
-df1 <- read.csv('test_proj1_20210601.csv')
-df1$ACT <- as.character(df1$ACT)
+#df1 <- read.csv('test_proj1_20210601.csv')
+#df1$ACT <- as.character(df1$ACT)
 
-df2 <- read.csv('test_proj2_20210601.csv')
-df2$ACT <- as.character(df2$ACT)
+#df2 <- read.csv('test_proj2_20210601.csv')
+#df2$ACT <- as.character(df2$ACT)
 
 df3 <- read.csv('proj_newcode3_20210602.csv')
 df3$ACTION <- as.character(df3$ACTION)
@@ -38,13 +38,15 @@ df3$ACTION <- as.character(df3$ACTION)
 df5 <- read.csv('proj_newcode3_20210602_v02.csv')
 df5$ACTION <- as.character(df5$ACTION)
 
+df5$PROJ_DAYS <- as.integer(format(as.Date(df5$PROJ_DAYS), "%Y%m%d"))
+
 head(df)
-head(df1)
-head(df2)
+#head(df1)
+#head(df2)
 head(df3)
 head(df5)
-df4 <- rbind(df1, df2)
-head(df4)
+#df4 <- rbind(df1, df2)
+#head(df4)
 ```
 
 ## Try out the createSequenceMatrix fuction
@@ -382,6 +384,46 @@ reg_2states_sims <- replicate(20, {
 ```{r save_seq2, echo=TRUE, eval=TRUE}
 
 ```
+
+
+## From here I want to simulate a bunch of sequences and then look at a histogram for when project occur or not for each individual day.
+## I also think I want to look at the mean and median project length in order to determine the n value for rmarkovchain. 
+
+```{r mean_proj_dur, echo=TRUE, eval=TRUE}
+
+projs3 <- unique(unlist(df3$NEPA_PROJECT))
+
+pd_df3 = data.frame()
+
+for (i in 1:length(projs3)) {
+  #save project name to variable p
+  p <- projs3[i]
+  
+  #create a temporary dataframe for each project
+  tmp_df <- subset(df3, NEPA_PROJECT == projs3[i])
+  
+  # find the max project length for each project
+  max_pd <- max(as.integer(tmp_df$PROJ_DAYS))
+  
+  pd_df3 <- rbind(pd_df3, max_pd)
+}
+                  
+
+projs5 <- unique(unlist(df5$NEPA_PROJECT))
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## I think I want to first, test out how to subset by project, and then try to do the subsetting in a loop. Somehow I want to get the transition matrices for each project. Still need to figure out how to get the time of the transitions. According to the datacamp markovchain in R "Transition matrices have the property that
