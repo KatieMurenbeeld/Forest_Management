@@ -1,0 +1,98 @@
+---
+title: "MarkovChain_SPT_logseq"
+author: "Katie Murenbeeld"
+date: "6/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Intro:
+
+Testing out markov chain for picking a "typical" sequence of logging events in Southern Idaho timber harvest activities.
+
+```{r load_lib, echo=FALSE, eval=TRUE}
+library(markovchain)
+#library(dplyr)
+library(tidyverse)
+library(lubridate)
+```
+
+## Load data
+
+```{r data, echo=FALSE, eval=TRUE}
+
+# Larger dataset for region
+df_reg <- read.csv('proj_newcode3_20210607.csv')
+df_reg$ACTION <- as.character(df_reg$ACTION)
+
+# Smaller dataaset for S. Idaho
+df_sid <- read.csv('proj_newcode3_20210607_v02.csv')
+df_sid$ACTION <- as.character(df_sid$ACTION)
+
+#df5$PROJ_DAYS <- ymd_hms(df5$PROJ_DAYS)
+
+head(df_reg)
+head(df_sid)
+
+```
+
+
+## Create probability(sequence) matrices
+
+```{r seqmat, echo=TRUE, eval=TRUE}
+# First dataset. I think too many action states. No binary Action - No Action?
+seqmat_reg12 <- createSequenceMatrix(df_reg$ACTIVITY_TYPE, toRowProbs = TRUE, sanitize=TRUE)
+seqmat_reg12
+
+# New dataset with more Nat. Forests added. Very simplified activity types and has binary Action - No Action?
+seqmat_reg2 <- createSequenceMatrix(df_reg$ACTION, toRowProbs = TRUE, sanitize=TRUE)
+seqmat_reg2
+
+seqmat_sid12 <- createSequenceMatrix(df_sid$ACTIVITY_TYPE, toRowProbs = TRUE, sanitize=TRUE)
+seqmat_sid12
+
+# Test datasets with only 2 projects from Nat. Forests in Idaho. Very simplified activity types and has binary Action - No Action?
+seqmat_sid2 <- createSequenceMatrix(df_sid$ACTION, toRowProbs = TRUE, sanitize=TRUE)
+seqmat_sid2
+
+```
+
+## Create the state vectors, need to be in alphabetical or ascending. Then create new markov chains.
+
+```{r state_vec, echo=TRUE, eval=TRUE, fig.height=10, fig.width=15}
+
+# I think I need the sequence vector in same order as a column or row of the transition matrix (alphabetical, from 0->1)?? 
+# I think the new('markovchain',...) already checks the trans. matrix and makes sure the seq names and row/column names of the
+# trans matrix correspond to each other.
+
+
+seq_reg12 <- sort(unique(df_reg$ACTIVITY_TYPE))
+seq_reg2 <- sort(unique(df_reg$ACTION))
+
+seq_sid12 <- sort(unique(df_sid$ACTIVITY_TYPE))
+seq_sid2 <- sort(unique(df_sid$ACTION))
+
+markov_reg12 <- new('markovchain', 
+               transitionMatrix = seqmat_reg12,
+               states = seq_reg12)
+
+markov_reg2 <- new('markovchain', 
+               transitionMatrix = seqmat_reg2,
+               states = seq_reg2)
+
+markov_sid12 <- new('markovchain', 
+               transitionMatrix = seqmat_sid12,
+               states = seq_sid12)
+
+markov_sid2 <- new('markovchain', 
+               transitionMatrix = seqmat_sid2,
+               states = seq_sid2)
+
+plot(markov_reg12)
+plot(markov_reg2)
+plot(markov_sid12)
+plot(markov_sid2)
+```
