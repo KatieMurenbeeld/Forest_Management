@@ -96,3 +96,114 @@ plot(markov_reg2)
 plot(markov_sid12)
 plot(markov_sid2)
 ```
+
+## First Time Passage
+
+```{r timepassage, echo=TRUE, eval=TRUE}
+meanFirstPassageTime(markov_reg12)
+meanFirstPassageTime(markov_reg2)
+meanFirstPassageTime(markov_sid12)
+meanFirstPassageTime(markov_sid2)
+```
+
+## From here I want to simulate a bunch of sequences and then look at a histogram for when project occur or not for each individual day.
+## I also think I want to look at the mean and median project length in order to determine the n value for rmarkovchain. 
+
+```{r mean_proj_dur, echo=TRUE, eval=TRUE}
+
+projs_reg <- unique(unlist(df_reg$NEPA_PROJECT))
+
+pd_df_reg = data.frame()
+
+for (i in 1:length(projs_reg)) {
+  #save project name to variable p
+  p <- projs_reg[i]
+  
+  #create a temporary dataframe for each project
+  tmp_df <- subset(df_reg, NEPA_PROJECT == projs_reg[i])
+  
+  # find the max project length for each project
+  max_pd <- max(as.integer(tmp_df$PROJ_INT))
+  
+  pd_df_reg <- rbind(pd_df_reg, max_pd)
+}
+                  
+
+projs_sid <- unique(unlist(df_sid$NEPA_PROJECT))
+
+pd_df_sid = data.frame()
+
+for (i in 1:length(projs_sid)) {
+  #save project name to variable p
+  p <- projs_sid[i]
+  
+  #create a temporary dataframe for each project
+  tmp_df <- subset(df_sid, NEPA_PROJECT == projs_sid[i])
+  
+  # find the max project length for each project
+  max_pd <- max(as.integer(tmp_df$PROJ_INT))
+  
+  pd_df_sid <- rbind(pd_df_sid, max_pd)
+}
+```
+
+```{r hist_max_pd, echo=TRUE, eval=TRUE}
+
+hist(pd_df_reg$X29L, breaks = 366)
+hist(pd_df_sid$X1749L, breaks = 118)
+mean(pd_df_reg$X29L)
+mean(pd_df_sid$X1749L)
+median(pd_df_reg$X29L)
+median(pd_df_sid$X1749L)
+```
+## Let's replicate a bunch of times! Using the mean project durations
+
+```{r, seq_sims_mean, echo=TRUE, eval=TRUE}
+# mean project length
+
+reg12_sims_mu <- replicate(20, {
+  sequence <- rmarkovchain(n = 532, object = markov_reg12 , t0 = "NO_ACT")
+})
+  
+reg2_sims_mu <- replicate(20, {
+  sequence <- rmarkovchain(n = 532, object = markov_reg2, t0 = "0")
+})
+
+sid12_sims_mu <- replicate(20, {
+  sequence <- rmarkovchain(n = 543, object = markov_sid12, t0 = "NO_ACT")
+})
+
+sid2_sims_mu <- replicate(20, {
+  sequence <- rmarkovchain(n = 543, object = markov_sid2, t0 = "0")
+})
+```
+
+## Let's replicate a bunch of times! Again! using the median project durations
+
+```{r, seq_sims_med, echo=TRUE, eval=TRUE}
+# mean project length
+
+reg12_sims_med <- replicate(20, {
+  sequence <- rmarkovchain(n = 149, object = markov_reg12 , t0 = "NO_ACT")
+})
+  
+reg2_sims_med <- replicate(20, {
+  sequence <- rmarkovchain(n = 149, object = markov_reg2, t0 = "0")
+})
+
+sid12_sims_med <- replicate(20, {
+  sequence <- rmarkovchain(n = 190, object = markov_sid12, t0 = "NO_ACT")
+})
+
+sid2_sims_med <- replicate(20, {
+  sequence <- rmarkovchain(n = 190, object = markov_sid2, t0 = "0")
+})
+```
+
+
+
+
+
+
+
+
