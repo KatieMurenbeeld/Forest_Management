@@ -17,6 +17,7 @@ Testing out markov chain for picking a "typical" sequence of logging events in S
 library(markovchain)
 #library(dplyr)
 library(tidyverse)
+library(lubridate)
 ```
 
 ## Load data
@@ -32,13 +33,17 @@ df$ACRES <- as.numeric(df$ACRES)
 #df2 <- read.csv('test_proj2_20210601.csv')
 #df2$ACT <- as.character(df2$ACT)
 
-df3 <- read.csv('proj_newcode3_20210602.csv')
+# Larger dataset for region
+#df3 <- read.csv('proj_newcode3_20210602.csv')
+df3 <- read.csv('proj_newcode3_20210607.csv')
 df3$ACTION <- as.character(df3$ACTION)
 
-df5 <- read.csv('proj_newcode3_20210602_v02.csv')
+# Smaller dataaset for S. Idaho
+#df5 <- read.csv('proj_newcode3_20210602_v02.csv')
+df5 <- read.csv('proj_newcode3_20210607_v02.csv')
 df5$ACTION <- as.character(df5$ACTION)
 
-df5$PROJ_DAYS <- as.integer(format(as.Date(df5$PROJ_DAYS), "%Y%m%d"))
+#df5$PROJ_DAYS <- ymd_hms(df5$PROJ_DAYS)
 
 head(df)
 #head(df1)
@@ -403,7 +408,7 @@ for (i in 1:length(projs3)) {
   tmp_df <- subset(df3, NEPA_PROJECT == projs3[i])
   
   # find the max project length for each project
-  max_pd <- max(as.integer(tmp_df$PROJ_DAYS))
+  max_pd <- max(as.integer(tmp_df$PROJ_INT))
   
   pd_df3 <- rbind(pd_df3, max_pd)
 }
@@ -411,9 +416,28 @@ for (i in 1:length(projs3)) {
 
 projs5 <- unique(unlist(df5$NEPA_PROJECT))
 
+pd_df5 = data.frame()
 
+for (i in 1:length(projs5)) {
+  #save project name to variable p
+  p <- projs5[i]
+  
+  #create a temporary dataframe for each project
+  tmp_df <- subset(df5, NEPA_PROJECT == projs5[i])
+  
+  # find the max project length for each project
+  max_pd <- max(as.integer(tmp_df$PROJ_INT))
+  
+  pd_df5 <- rbind(pd_df5, max_pd)
+}
 ```
 
+```{r hist_max_pd, echo=TRUE, eval=TRUE}
+
+hist(pd_df3$X29L, breaks = 366)
+hist(pd_df5$X1749L, breaks = 118)
+
+```
 
 
 
