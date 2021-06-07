@@ -200,8 +200,44 @@ sid2_sims_med <- replicate(20, {
 })
 ```
 
+## Starting from INT_CUT and 1
 
+```{r, seq_sims_mean2, echo=TRUE, eval=TRUE}
+# mean project length
 
+reg12_sims_mu2 <- replicate(20, {
+  sequence <- rmarkovchain(n = 532, object = markov_reg12 , t0 = "INT_CUT")
+})
+  
+reg2_sims_mu2 <- replicate(20, {
+  sequence <- rmarkovchain(n = 532, object = markov_reg2, t0 = "1")
+})
+
+sid12_sims_mu2 <- replicate(20, {
+  sequence <- rmarkovchain(n = 543, object = markov_sid12, t0 = "INT_CUT")
+})
+
+sid2_sims_mu2 <- replicate(20, {
+  sequence <- rmarkovchain(n = 543, object = markov_sid2, t0 = "1")
+})
+```
+
+## Count the number of actions occuring on any specific day (row) of the synthetic sequence
+## I think I need a for loop and also to transform the data frame? Look at EEB for examples.
+
+```{r count_seq, echo=TRUE, eval=TRUE}
+test_df <- as.data.frame(reg2_sims_mu2)
+
+rows <- nrow(test_df)
+
+for (i in length(rows[i])) {
+  
+  
+}
+  
+
+test_df$count.act <- count(test_df, wt_var = 1)
+```
 
 
 
