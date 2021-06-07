@@ -436,7 +436,10 @@ for (i in 1:length(projs5)) {
 
 hist(pd_df3$X29L, breaks = 366)
 hist(pd_df5$X1749L, breaks = 118)
-
+mean(pd_df3$X29L)
+mean(pd_df5$X1749L)
+median(pd_df3$X29L)
+median(pd_df5$X1749L)
 ```
 
 
