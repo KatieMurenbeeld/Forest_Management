@@ -442,9 +442,49 @@ median(pd_df3$X29L)
 median(pd_df5$X1749L)
 ```
 
+## Let's replicate a bunch of times! Again! using the mean and median project durations
 
+```{r, seq_sims_mean, echo=TRUE, eval=TRUE}
+# mean project length
 
+sidaho12_sims_mu <- replicate(20, {
+  sequence <- rmarkovchain(n = 543, object = markov6.1 , t0 = "NO_ACT")
+})
+  
+sidaho2_sims_mu <- replicate(20, {
+  sequence <- rmarkovchain(n = 543, object = markov7.1, t0 = "0")
+})
 
+reg12_sims_mu <- replicate(20, {
+  sequence <- rmarkovchain(n = 532, object = markov2.1, t0 = "NO_ACT")
+})
+
+reg2_sims_mu <- replicate(20, {
+  sequence <- rmarkovchain(n = 532, object = markov3.1, t0 = "0")
+})
+```
+
+## Let's replicate a bunch of times! Again! using the mean and median project durations
+
+```{r, seq_sims_med, echo=TRUE, eval=TRUE}
+# mean project length
+
+sidaho12_sims_med <- replicate(20, {
+  sequence <- rmarkovchain(n = 190, object = markov6.1 , t0 = "NO_ACT")
+})
+  
+sidaho2_sims_med <- replicate(20, {
+  sequence <- rmarkovchain(n = 190, object = markov7.1, t0 = "0")
+})
+
+reg12_sims_med <- replicate(20, {
+  sequence <- rmarkovchain(n = 149, object = markov2.1, t0 = "NO_ACT")
+})
+
+reg2_sims_med <- replicate(20, {
+  sequence <- rmarkovchain(n = 149, object = markov3.1, t0 = "0")
+})
+```
 
 
 
