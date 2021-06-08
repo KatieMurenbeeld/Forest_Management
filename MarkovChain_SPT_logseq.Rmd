@@ -41,6 +41,7 @@ head(df_sid)
 
 df_reg_act <- filter(df_reg, ACTION == "1") 
 df_sid_act <- filter(df_sid, ACTION == "1")
+
 mean(df_reg_act$ACRES)
 median(df_reg_act$ACRES)
 mean(df_sid_act$ACRES)
