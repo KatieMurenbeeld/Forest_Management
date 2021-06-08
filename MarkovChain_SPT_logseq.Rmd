@@ -18,6 +18,7 @@ library(markovchain)
 #library(dplyr)
 library(tidyverse)
 library(lubridate)
+library(matrixStats)
 ```
 
 ## Load data
@@ -230,31 +231,13 @@ days <- c(1:532)
 
 
 test_df <- as.data.frame(reg2_sims_mu2)
-#test_df$days <- days
+test_df$days <- c(1:532)
 
-test_df2 <- as.data.frame(t(as.matrix(test_df)))
+test_df2 <- t(as.matrix(test_df))
 names(test_df2) <- c(1:532)
-#test_df2 <- as.numeric(gsub("1", 1, gsub("0", 0, test_df2)))
-tidydf <- test_df %>% gather(SIM, ACT, V1:V20)
+commmon_seqs <- colCounts(test_df2, value = "1")
 
-test_df3 <- test_df2 %>% bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))
-
-#test <- by(test_df, )
-#tidydf$act.count <- ave(tidydf$ACT ==1, tidydf$SIM, FUN=cumsum)
-
-#test_df$act.count <- ave(test_df[1:20] == 1, test_df$days, FUN=cumsum)  
-  
-  
-#mcDf = data.frame()
-
-#for (i in length(1:532)) {
-#  tmp_df <- subset(test_df, days == i)
-  
-#  count_c <- 
-  
-  
-  
-#}
+barplot(commmon_seqs, names.arg = days)
 
 ```
 
