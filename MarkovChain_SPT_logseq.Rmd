@@ -226,17 +226,25 @@ sid2_sims_mu2 <- replicate(20, {
 ## I think I need a for loop and also to transform the data frame? Look at EEB for examples.
 
 ```{r count_seq, echo=TRUE, eval=TRUE}
+days <- c(1:532)
+
+
 test_df <- as.data.frame(reg2_sims_mu2)
+test_df$days <- days
 
-rows <- nrow(test_df)
+tidydf <- test_df %>% spread(SIM, DAYS, COUNT, V1:V20)
 
-for (i in length(rows[i])) {
+mcDf = data.frame()
+
+#for (i in length(1:532)) {
+#  tmp_df <- subset(test_df, days == i)
+  
+#  count_c <- 
   
   
-}
   
+#}
 
-test_df$count.act <- count(test_df, wt_var = 1)
 ```
 
 
