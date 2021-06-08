@@ -19,6 +19,7 @@ library(markovchain)
 library(tidyverse)
 library(lubridate)
 library(matrixStats)
+library(ggplot2)
 ```
 
 ## Load data
@@ -268,4 +269,25 @@ hist(com_seqs, breaks = 100)
 hist(com_seqs2, breaks = 100)
 ```
 
+```{r on_more_test, echo=TRUE, eval=TRUE}
+
+days <- c(1:532)
+test_an <- as.data.frame(reg2_sims_mu)
+test_an$days <- c(1:532)
+
+test_an <- test_an %>% gather(key = SIM, value = ACT, V1:V100)
+test_an$ACT <- ifelse(test_an$ACT =='1', 1, ifelse(test_an$ACT =='0', 0, 0))
+
+day_act <- filter(test_an, ACT == 1) 
+x = day_act$days
+h <- hist(day_act$days, breaks = 100, plot=FALSE)
+plot(h, col="green")
+xlines <- seq(min(h$breaks),max(h$breaks), length.out = 100)
+#lines(x = xlines, y = dgamma(xlines, 2, 1) * length(x)*diff(h$breaks)[1])
+
+
+
+ggplot(day_act, aes(x=days)) + geom_histogram(aes(y=..density..), binwidth = 5) + geom_density()
+
+```
 
