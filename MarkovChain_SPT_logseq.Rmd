@@ -166,7 +166,7 @@ reg12_sims_mu <- replicate(20, {
   sequence <- rmarkovchain(n = 532, object = markov_reg12 , t0 = "NO_ACT")
 })
   
-reg2_sims_mu <- replicate(20, {
+reg2_sims_mu <- replicate(1000, {
   sequence <- rmarkovchain(n = 532, object = markov_reg2, t0 = "0")
 })
 
@@ -210,7 +210,7 @@ reg12_sims_mu2 <- replicate(20, {
   sequence <- rmarkovchain(n = 532, object = markov_reg12 , t0 = "INT_CUT")
 })
   
-reg2_sims_mu2 <- replicate(100, {
+reg2_sims_mu2 <- replicate(1000, {
   sequence <- rmarkovchain(n = 532, object = markov_reg2, t0 = "1")
 })
 
@@ -237,7 +237,15 @@ test_df2 <- t(as.matrix(test_df))
 names(test_df2) <- c(1:532)
 commmon_seqs <- colCounts(test_df2, value = "1")
 
+test_df3 <- as.data.frame(reg2_sims_mu)
+test_df3$days <- c(1:532)
+
+test_df4<- t(as.matrix(test_df3))
+names(test_df4) <- c(1:532)
+commmon_seqs2 <- colCounts(test_df4, value = "1")
+
 barplot(commmon_seqs, names.arg = days)
+barplot(commmon_seqs2, names.arg = days)
 
 ```
 
