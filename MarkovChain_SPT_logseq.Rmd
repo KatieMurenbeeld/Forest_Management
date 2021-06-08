@@ -175,7 +175,7 @@ sid12_sims_mu <- replicate(20, {
   sequence <- rmarkovchain(n = 543, object = markov_sid12, t0 = "NO_ACT")
 })
 
-sid2_sims_mu <- replicate(20, {
+sid2_sims_mu <- replicate(100, {
   sequence <- rmarkovchain(n = 543, object = markov_sid2, t0 = "0")
 })
 ```
@@ -215,11 +215,19 @@ reg2_sims_mu2 <- replicate(100, {
   sequence <- rmarkovchain(n = 532, object = markov_reg2, t0 = "1")
 })
 
+reg2_sims_mu3 <- replicate(1000, {
+  sequence <- rmarkovchain(n = 532, object = markov_reg2, t0 = "1")
+})
+
 sid12_sims_mu2 <- replicate(20, {
   sequence <- rmarkovchain(n = 543, object = markov_sid12, t0 = "INT_CUT")
 })
 
-sid2_sims_mu2 <- replicate(20, {
+sid2_sims_mu2 <- replicate(100, {
+  sequence <- rmarkovchain(n = 543, object = markov_sid2, t0 = "1")
+})
+
+sid2_sims_mu3 <- replicate(1000, {
   sequence <- rmarkovchain(n = 543, object = markov_sid2, t0 = "1")
 })
 ```
@@ -269,25 +277,43 @@ hist(com_seqs, breaks = 100)
 hist(com_seqs2, breaks = 100)
 ```
 
-```{r on_more_test, echo=TRUE, eval=TRUE}
+```{r sid_1000, echo=TRUE, eval=TRUE}
+# For S. Idaho. 1000 synthetic sequences
 
-days <- c(1:532)
-test_an <- as.data.frame(reg2_sims_mu)
-test_an$days <- c(1:532)
+#day.count <- c(1:543)
+df_sid2_mu3 <- as.data.frame(sid2_sims_mu3)
+df_sid2_mu3$days <- c(1:543)
 
-test_an <- test_an %>% gather(key = SIM, value = ACT, V1:V100)
-test_an$ACT <- ifelse(test_an$ACT =='1', 1, ifelse(test_an$ACT =='0', 0, 0))
+df_sid2_mu3 <- df_sid2_mu3 %>% gather(key = SIM, value = ACT, V1:V100)
+df_sid2_mu3$ACT <- ifelse(df_sid2_mu3$ACT =='1', 1, ifelse(df_sid2_mu3$ACT =='0', 0, 0))
 
-day_act <- filter(test_an, ACT == 1) 
-x = day_act$days
-h <- hist(day_act$days, breaks = 100, plot=FALSE)
+sid2_day_act <- filter(df_sid2_mu3, ACT == 1) 
+x = sid2_day_act$days
+h <- hist(sid2_day_act$days, breaks = 100, plot=FALSE)
 plot(h, col="green")
 xlines <- seq(min(h$breaks),max(h$breaks), length.out = 100)
 #lines(x = xlines, y = dgamma(xlines, 2, 1) * length(x)*diff(h$breaks)[1])
-
-
-
-ggplot(day_act, aes(x=days)) + geom_histogram(aes(y=..density..), binwidth = 5) + geom_density()
+ggplot(sid2_day_act, aes(x=days)) + geom_histogram(aes(y=..density..), binwidth = 5) + geom_density()
 
 ```
+
+```{r reg_1000, echo=TRUE, eval=TRUE}
+# For Region. 1000 synthetic sequences
+
+#day.count <- c(1:532)
+df_reg2_mu3 <- as.data.frame(reg2_sims_mu3)
+df_reg2_mu3$days <- c(1:532)
+
+df_reg2_mu3 <- df_reg2_mu3 %>% gather(key = SIM, value = ACT, V1:V100)
+df_reg2_mu3$ACT <- ifelse(df_reg2_mu3$ACT =='1', 1, ifelse(df_reg2_mu3$ACT =='0', 0, 0))
+
+reg2_day_act <- filter(df_reg2_mu3, ACT == 1) 
+x = reg2_day_act$days
+h <- hist(reg2_day_act$days, breaks = 100, plot=FALSE)
+plot(h, col="green")
+xlines <- seq(min(h$breaks),max(h$breaks), length.out = 100)
+#lines(x = xlines, y = dgamma(xlines, 2, 1) * length(x)*diff(h$breaks)[1])
+ggplot(reg2_day_act, aes(x=days)) + geom_histogram(aes(y=..density..), binwidth = 5) + geom_density()
+```
+
 
