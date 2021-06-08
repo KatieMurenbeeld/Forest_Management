@@ -277,7 +277,7 @@ hist(com_seqs, breaks = 100)
 hist(com_seqs2, breaks = 100)
 ```
 
-```{r sid_1000, echo=TRUE, eval=TRUE}
+```{r sid_1000, echo=TRUE, eval=TRUE, fig.height=6, fig.width=15, fig.align='center'}
 # For S. Idaho. 1000 synthetic sequences
 
 #day.count <- c(1:543)
@@ -293,8 +293,10 @@ h <- hist(sid2_day_act$days, breaks = 100, plot=FALSE)
 plot(h, col="green")
 xlines <- seq(min(h$breaks),max(h$breaks), length.out = 100)
 #lines(x = xlines, y = dgamma(xlines, 2, 1) * length(x)*diff(h$breaks)[1])
-ggplot(sid2_day_act, aes(x=days)) + geom_histogram(aes(y=..density..), binwidth = 5) + geom_density()
 
+#ggplot(sid2_day_act, aes(x=days)) + geom_histogram(aes(y=..density..), binwidth = 5) + geom_density() + geom_bar()
+
+ggplot(sid2_day_act, aes(x=days)) + geom_histogram(binwidth = 1) + scale_x_continuous(breaks = seq(1, 543, 5)) + theme(axis.text.x = element_text(angle = 90))
 ```
 
 ```{r reg_1000, echo=TRUE, eval=TRUE}
