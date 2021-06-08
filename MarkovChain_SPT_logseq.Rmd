@@ -166,7 +166,7 @@ reg12_sims_mu <- replicate(20, {
   sequence <- rmarkovchain(n = 532, object = markov_reg12 , t0 = "NO_ACT")
 })
   
-reg2_sims_mu <- replicate(1000, {
+reg2_sims_mu <- replicate(100, {
   sequence <- rmarkovchain(n = 532, object = markov_reg2, t0 = "0")
 })
 
@@ -210,7 +210,7 @@ reg12_sims_mu2 <- replicate(20, {
   sequence <- rmarkovchain(n = 532, object = markov_reg12 , t0 = "INT_CUT")
 })
   
-reg2_sims_mu2 <- replicate(1000, {
+reg2_sims_mu2 <- replicate(100, {
   sequence <- rmarkovchain(n = 532, object = markov_reg2, t0 = "1")
 })
 
@@ -225,31 +225,47 @@ sid2_sims_mu2 <- replicate(20, {
 
 ## Count the number of actions occuring on any specific day (row) of the synthetic sequence
 ## I think I need a for loop and also to transform the data frame? Look at EEB for examples.
+## Well I forgot that my "numbers" 0,1 were actually characters.....which makes this more difficult than it needs to be.
+## Also, why so hard to loop over rows?
 
 ```{r count_seq, echo=TRUE, eval=TRUE}
 days <- c(1:532)
 
 
 test_df <- as.data.frame(reg2_sims_mu2)
-test_df$days <- c(1:532)
-
-test_df2 <- t(as.matrix(test_df))
+test_df2 <- as.data.frame(t(as.matrix(test_df)))
 names(test_df2) <- c(1:532)
-commmon_seqs <- colCounts(test_df2, value = "1")
+test_df2 <- ifelse(test_df2[1:532] =='1', 1, ifelse(test_df2[1:532] =='0', 0, 0))
+common_seqs <- colCounts(as.matrix(test_df2, value = 1))
 
 test_df3 <- as.data.frame(reg2_sims_mu)
-test_df3$days <- c(1:532)
-
-test_df4<- t(as.matrix(test_df3))
+#test_df3$days <- c(1:532)
+test_df4<- as.data.frame(t(as.matrix(test_df3)))
 names(test_df4) <- c(1:532)
-commmon_seqs2 <- colCounts(test_df4, value = "1")
+test_df4 <- ifelse(test_df4[1:532] =='1', 1, ifelse(test_df4[1:532] =='0', 0, 0))
+common_seqs2 <- colCounts(test_df4, value = "1")
 
-barplot(commmon_seqs, names.arg = days)
-barplot(commmon_seqs2, names.arg = days)
+hist(test_df2)
+hist(test_df4)
+
+barplot(common_seqs, names.arg = days)
+barplot(common_seqs2, names.arg = days)
 
 ```
 
-## Well I forgot that my "numbers" 0,1 were actually characters.....which makes this a lot harder. Also, why so hard to loop over rows?
 
+
+## Combine the common seqs and days. Order by most common to find top days.
+
+```{r find_top_days, echo=TRUE, eval=TRUE}
+#common_seqsdf <- as.data.frame(common_seqs)
+
+com_seqs <- cbind(common_seqs, days)
+
+com_seqs2 <- cbind(common_seqs2, days)
+
+hist(com_seqs, breaks = 100)
+hist(com_seqs2, breaks = 100)
+```
 
 
