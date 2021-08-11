@@ -34,6 +34,22 @@ df_reg$ACTION <- as.character(df_reg$ACTION)
 df_sid <- read.csv('proj_newcode3_20210607_v02.csv')
 df_sid$ACTION <- as.character(df_sid$ACTION)
 
+df_sid <- df_sid %>% 
+  mutate(ACT_TYPE2 = case_when(
+    ACTIVITY_TYPE == 'NO_ACT' ~ '0',
+    ACTIVITY_TYPE == 'INT_CUT' ~ '1',
+    ACTIVITY_TYPE != 'NO_ACT' & ACTIVITY_TYPE != 'INT_CUT' ~ '2'
+  ))
+#df_sid$ACT_TYPE2 <- as.character(df_sid$ACT_TYPE2)
+
+df_reg <- df_reg %>% 
+  mutate(ACT_TYPE2 = case_when(
+    ACTIVITY_TYPE == 'NO_ACT' ~ '0',
+    ACTIVITY_TYPE == 'INT_CUT' ~ '1',
+    ACTIVITY_TYPE != 'NO_ACT' & ACTIVITY_TYPE != 'INT_CUT' ~ '2'
+  ))
+
+#df_reg$ACT_TYPE2 <- as.character(df_reg$ACT_TYPE2)
 #df5$PROJ_DAYS <- ymd_hms(df5$PROJ_DAYS)
 
 head(df_reg)
@@ -60,12 +76,19 @@ seqmat_reg12
 seqmat_reg2 <- createSequenceMatrix(df_reg$ACTION, toRowProbs = TRUE, sanitize=TRUE)
 seqmat_reg2
 
+# New dataset with more Nat. Forests added. Very simplified activity types and has binary Action - No Action?
+seqmat_reg3 <- createSequenceMatrix(df_reg$ACT_TYPE2, toRowProbs = TRUE, sanitize=TRUE)
+seqmat_reg3
+
 seqmat_sid12 <- createSequenceMatrix(df_sid$ACTIVITY_TYPE, toRowProbs = TRUE, sanitize=TRUE)
 seqmat_sid12
 
 # Test datasets with only 2 projects from Nat. Forests in Idaho. Very simplified activity types and has binary Action - No Action?
 seqmat_sid2 <- createSequenceMatrix(df_sid$ACTION, toRowProbs = TRUE, sanitize=TRUE)
 seqmat_sid2
+
+seqmat_sid3 <- createSequenceMatrix(df_sid$ACT_TYPE2, toRowProbs = TRUE, sanitize=TRUE)
+seqmat_sid3
 
 ```
 
@@ -80,9 +103,11 @@ seqmat_sid2
 
 seq_reg12 <- sort(unique(df_reg$ACTIVITY_TYPE))
 seq_reg2 <- sort(unique(df_reg$ACTION))
+seq_reg3 <- sort(unique(df_reg$ACT_TYPE2))
 
 seq_sid12 <- sort(unique(df_sid$ACTIVITY_TYPE))
 seq_sid2 <- sort(unique(df_sid$ACTION))
+seq_sid3 <- sort(unique(df_sid$ACT_TYPE2))
 
 markov_reg12 <- new('markovchain', 
                transitionMatrix = seqmat_reg12,
@@ -92,6 +117,10 @@ markov_reg2 <- new('markovchain',
                transitionMatrix = seqmat_reg2,
                states = seq_reg2)
 
+markov_reg3 <- new('markovchain', 
+               transitionMatrix = seqmat_reg3,
+               states = seq_reg3)
+
 markov_sid12 <- new('markovchain', 
                transitionMatrix = seqmat_sid12,
                states = seq_sid12)
@@ -100,10 +129,16 @@ markov_sid2 <- new('markovchain',
                transitionMatrix = seqmat_sid2,
                states = seq_sid2)
 
+markov_sid3 <- new('markovchain', 
+               transitionMatrix = seqmat_sid3,
+               states = seq_sid3)
+
 plot(markov_reg12)
 plot(markov_reg2)
+plot(markov_reg3)
 plot(markov_sid12)
 plot(markov_sid2)
+plot(markov_sid3)
 ```
 
 ## First Time Passage
@@ -111,8 +146,10 @@ plot(markov_sid2)
 ```{r timepassage, echo=TRUE, eval=TRUE}
 meanFirstPassageTime(markov_reg12)
 meanFirstPassageTime(markov_reg2)
+meanFirstPassageTime(markov_reg3)
 meanFirstPassageTime(markov_sid12)
 meanFirstPassageTime(markov_sid2)
+meanFirstPassageTime(markov_sid3)
 ```
 
 ## From here I want to simulate a bunch of sequences and then look at a histogram for when project occur or not for each individual day.
@@ -178,12 +215,20 @@ reg2_sims_mu <- replicate(100, {
   sequence <- rmarkovchain(n = 532, object = markov_reg2, t0 = "0")
 })
 
+reg3_sims_mu <- replicate(100, {
+  sequence <- rmarkovchain(n = 532, object = markov_reg3, t0 = "0")
+})
+
 sid12_sims_mu <- replicate(20, {
   sequence <- rmarkovchain(n = 543, object = markov_sid12, t0 = "NO_ACT")
 })
 
 sid2_sims_mu <- replicate(100, {
   sequence <- rmarkovchain(n = 543, object = markov_sid2, t0 = "0")
+})
+
+sid3_sims_mu <- replicate(100, {
+  sequence <- rmarkovchain(n = 543, object = markov_sid3, t0 = "0")
 })
 ```
 
@@ -200,12 +245,20 @@ reg2_sims_med <- replicate(20, {
   sequence <- rmarkovchain(n = 149, object = markov_reg2, t0 = "0")
 })
 
+reg3_sims_med <- replicate(20, {
+  sequence <- rmarkovchain(n = 149, object = markov_reg3, t0 = "0")
+})
+
 sid12_sims_med <- replicate(20, {
   sequence <- rmarkovchain(n = 190, object = markov_sid12, t0 = "NO_ACT")
 })
 
 sid2_sims_med <- replicate(20, {
   sequence <- rmarkovchain(n = 190, object = markov_sid2, t0 = "0")
+})
+
+sid3_sims_med <- replicate(20, {
+  sequence <- rmarkovchain(n = 190, object = markov_sid3, t0 = "0")
 })
 ```
 
@@ -226,6 +279,14 @@ reg2_sims_mu3 <- replicate(1000, {
   sequence <- rmarkovchain(n = 532, object = markov_reg2, t0 = "1")
 })
 
+reg3_sims_mu2 <- replicate(100, {
+  sequence <- rmarkovchain(n = 532, object = markov_reg3, t0 = "1")
+})
+
+reg3_sims_mu3 <- replicate(1000, {
+  sequence <- rmarkovchain(n = 532, object = markov_reg3, t0 = "1")
+})
+
 sid12_sims_mu2 <- replicate(20, {
   sequence <- rmarkovchain(n = 543, object = markov_sid12, t0 = "INT_CUT")
 })
@@ -236,6 +297,14 @@ sid2_sims_mu2 <- replicate(100, {
 
 sid2_sims_mu3 <- replicate(1000, {
   sequence <- rmarkovchain(n = 543, object = markov_sid2, t0 = "1")
+})
+
+sid3_sims_mu2 <- replicate(100, {
+  sequence <- rmarkovchain(n = 543, object = markov_sid3, t0 = "1")
+})
+
+sid3_sims_mu3 <- replicate(1000, {
+  sequence <- rmarkovchain(n = 543, object = markov_sid3, t0 = "1")
 })
 ```
 
@@ -325,4 +394,57 @@ xlines <- seq(min(h$breaks),max(h$breaks), length.out = 100)
 ggplot(reg2_day_act, aes(x=days)) + geom_histogram(aes(y=..density..), binwidth = 5) + geom_density()
 ```
 
+```{r sid3_1000, echo=TRUE, eval=TRUE, fig.height=6, fig.width=15, fig.align='center'}
+# For S. Idaho. 1000 synthetic sequences
 
+#day.count <- c(1:543)
+df_sid3_mu3 <- as.data.frame(sid3_sims_mu3)
+df_sid3_mu3$days <- c(1:543)
+
+df_sid3_mu3 <- df_sid3_mu3 %>% gather(key = SIM, value = ACT_TYPE2, V1:V100)
+df_sid3_mu3$ACT_TYPE2 <- ifelse(df_sid3_mu3$ACT_TYPE2 =='1', 1, ifelse(df_sid3_mu3$ACT_TYPE2 =='2', 2, 0))
+
+sid3_days_act1 <- filter(df_sid3_mu3, ACT_TYPE2 == 1)
+sid3_days_act2 <- filter(df_sid3_mu3, ACT_TYPE2 == 2) 
+x1 = sid3_days_act1$days
+h1 <- hist(sid3_days_act1$days, breaks = 100, plot=FALSE)
+plot(h1, col="green")
+x2 = sid3_days_act2$days
+h2 <- hist(sid3_days_act2$days, breaks = 100, plot=FALSE)
+plot(h2, col="red")
+
+#xlines <- seq(min(h$breaks),max(h$breaks), length.out = 100)
+#lines(x = xlines, y = dgamma(xlines, 2, 1) * length(x)*diff(h$breaks)[1])
+
+#ggplot(sid2_day_act, aes(x=days)) + geom_histogram(aes(y=..density..), binwidth = 5) + geom_density() + geom_bar()
+
+ggplot(sid3_day2_act1, aes(x=days)) + geom_histogram(binwidth = 1) + scale_x_continuous(breaks = seq(1, 543, 5)) + theme(axis.text.x = element_text(angle = 90))
+```
+
+
+```{r reg3_1000, echo=TRUE, eval=TRUE}
+# For Region. 1000 synthetic sequences
+
+#day.count <- c(1:532)
+df_reg3_mu3 <- as.data.frame(reg3_sims_mu3)
+df_reg3_mu3$days <- c(1:532)
+
+df_reg3_mu3 <- df_reg3_mu3 %>% gather(key = SIM, value = ACT_TYPE2, V1:V100)
+df_reg3_mu3$ACT_TYPE2 <- ifelse(df_reg3_mu3$ACT_TYPE2 =='1', 1, ifelse(df_reg3_mu3$ACT_TYPE2 =='2', 2, 0))
+
+reg3_days_act1 <- filter(df_reg3_mu3, ACT_TYPE2 == 1)
+reg3_days_act2 <- filter(df_reg3_mu3, ACT_TYPE2 == 2) 
+x1 = reg3_days_act1$days
+h1 <- hist(reg3_days_act1$days, breaks = 100, plot=FALSE)
+plot(h1, col="green")
+x2 = reg3_days_act2$days
+h2 <- hist(reg3_days_act2$days, breaks = 100, plot=FALSE)
+plot(h2, col="red")
+
+#xlines <- seq(min(h$breaks),max(h$breaks), length.out = 100)
+#lines(x = xlines, y = dgamma(xlines, 2, 1) * length(x)*diff(h$breaks)[1])
+
+#ggplot(sid2_day_act, aes(x=days)) + geom_histogram(aes(y=..density..), binwidth = 5) + geom_density() + geom_bar()
+
+ggplot(reg3_days_act1, aes(x=days)) + geom_histogram(binwidth = 1) + scale_x_continuous(breaks = seq(1, 543, 5)) + theme(axis.text.x = element_text(angle = 90))
+```
