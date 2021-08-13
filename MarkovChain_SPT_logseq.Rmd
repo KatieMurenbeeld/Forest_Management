@@ -23,6 +23,7 @@ library(ggplot2)
 ```
 
 ## Load data
+Load the data.
 
 ```{r data, echo=FALSE, eval=TRUE}
 
